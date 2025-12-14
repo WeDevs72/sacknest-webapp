@@ -244,6 +244,76 @@ export async function GET(request) {
       return NextResponse.json(data || [])
     }
 
+    // ==================== ORDER DETAILS ====================
+    
+    if (path.match(/^orders\/[^\/]+$/)) {
+      const orderId = path.split('/')[1]
+      
+      // Find order by Razorpay order ID
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('razorpayOrderId', orderId)
+        .single()
+
+      if (orderError || !order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+
+      // Get pack details if packId exists
+      let pack = null
+      if (order.packId) {
+        const { data: packData } = await supabase
+          .from('premium_packs')
+          .select('*')
+          .eq('id', order.packId)
+          .single()
+        pack = packData
+      }
+
+      return NextResponse.json({ order, pack })
+    }
+
+    // ==================== SECURE DOWNLOAD ====================
+    
+    if (path.match(/^download\/[^\/]+$/)) {
+      const orderId = path.split('/')[1]
+      
+      // Verify order exists and is paid
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('razorpayOrderId', orderId)
+        .single()
+
+      if (orderError || !order) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+
+      if (order.status !== 'paid') {
+        return NextResponse.json({ error: 'Payment not completed' }, { status: 403 })
+      }
+
+      // Get pack and file URL
+      const { data: pack, error: packError } = await supabase
+        .from('premium_packs')
+        .select('*')
+        .eq('id', order.packId)
+        .single()
+
+      if (packError || !pack || !pack.fileUrl) {
+        return NextResponse.json({ error: 'File not available' }, { status: 404 })
+      }
+
+      // Return the file URL (in production, generate signed URL)
+      // For now, return direct URL - in production use signed URLs with expiration
+      return NextResponse.json({
+        success: true,
+        downloadUrl: pack.fileUrl,
+        packName: pack.name
+      })
+    }
+
     // Default 404
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
