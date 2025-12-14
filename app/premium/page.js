@@ -93,7 +93,8 @@ export default function PremiumPage() {
           })
 
           if (verifyResponse.ok) {
-            window.location.href = `/payment-success?orderId=${response.razorpay_order_id}`
+            // Redirect to secure download page
+            window.location.href = `/download/${response.razorpay_order_id}`
           } else {
             toast({
               title: "Payment Verification Failed",
