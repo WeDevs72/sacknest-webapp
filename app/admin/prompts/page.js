@@ -142,7 +142,7 @@ export default function AdminPromptsPage() {
       })
 
       if (response.ok) {
-        toast({ title: \"Deleted\", description: 'Prompt deleted successfully' })
+        toast({ title: "Deleted", description: 'Prompt deleted successfully' })
         fetchPrompts(token)
       }
     } catch (error) {
