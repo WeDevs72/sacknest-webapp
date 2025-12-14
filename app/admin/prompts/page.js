@@ -147,9 +147,9 @@ export default function AdminPromptsPage() {
       }
     } catch (error) {
       toast({
-        title: \"Error\",
+        title: "Error",
         description: 'Failed to delete prompt',
-        variant: \"destructive\"
+        variant: "destructive"
       })
     }
   }
