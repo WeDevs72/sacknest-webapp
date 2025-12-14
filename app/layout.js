@@ -1,6 +1,5 @@
 import './globals.css'
-import { Toaster } from '@/components/ui/toaster'
-import { ThemeProvider } from 'next-themes'
+import { Providers } from '@/components/providers'
 
 export const metadata = {
   title: 'SackNest - Premium AI Prompt Library for Creators',
@@ -15,10 +14,9 @@ export default function RootLayout({ children }) {
         <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <Providers>
           {children}
-          <Toaster />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )
