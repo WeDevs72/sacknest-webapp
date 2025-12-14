@@ -114,7 +114,7 @@ export default function AdminPromptsPage() {
 
       if (response.ok) {
         toast({
-          title: \"Success\",
+          title: "Success",
           description: editingPrompt ? 'Prompt updated' : 'Prompt created'
         })
         setShowDialog(false)
