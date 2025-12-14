@@ -86,13 +86,6 @@ export default function AdminLoginPage() {
           <p className="text-gray-600 dark:text-gray-400">Admin Panel</p>
         </div>
 
-        <div className="mb-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            <strong>⚠️ Setup Required:</strong> Configure Supabase credentials in <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">.env</code> file before logging in.
-            See <code className="bg-yellow-100 dark:bg-yellow-800 px-1 rounded">SUPABASE_SETUP.md</code> for instructions.
-          </p>
-        </div>
-
         <Card className="border-purple-200 dark:border-purple-800 shadow-xl">
           <CardHeader>
             <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
