@@ -80,6 +80,71 @@ export default function AdminPremiumPacksPage() {
     setShowDialog(true)
   }
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.includes('pdf') && !file.type.includes('zip')) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload a PDF or ZIP file",
+        variant: "destructive"
+      })
+      return
+    }
+
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Maximum file size is 50MB",
+        variant: "destructive"
+      })
+      return
+    }
+
+    setSelectedFile(file)
+    setUploadingFile(true)
+
+    try {
+      const token = localStorage.getItem('adminToken')
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', file)
+      uploadFormData.append('packId', editingPack?.id || 'new_' + Date.now())
+
+      const response = await fetch('/api/upload-pack-file', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: uploadFormData
+      })
+
+      if (!response.ok) {
+        throw new Error('Upload failed')
+      }
+
+      const data = await response.json()
+      
+      // Update fileUrl with the uploaded file URL
+      setFormData({...formData, fileUrl: data.fileUrl})
+      
+      toast({
+        title: "Upload Successful",
+        description: `${file.name} uploaded successfully`
+      })
+    } catch (error) {
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive"
+      })
+    } finally {
+      setUploadingFile(false)
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const token = localStorage.getItem('adminToken')
@@ -110,6 +175,7 @@ export default function AdminPremiumPacksPage() {
           description: editingPack ? 'Pack updated' : 'Pack created'
         })
         setShowDialog(false)
+        setSelectedFile(null)
         fetchPacks(token)
       } else {
         throw new Error('Failed to save pack')
