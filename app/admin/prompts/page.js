@@ -155,27 +155,27 @@ export default function AdminPromptsPage() {
   }
 
   return (
-    <div className=\"min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20\">
-      <header className=\"bg-white dark:bg-gray-900 border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50\">
-        <div className=\"container mx-auto px-4 py-4\">
-          <div className=\"flex items-center justify-between\">
-            <Link href=\"/admin/dashboard\" className=\"flex items-center space-x-2\">
-              <ArrowLeft className=\"w-5 h-5\" />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+      <header className="bg-white dark:bg-gray-900 border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/admin/dashboard" className="flex items-center space-x-2">
+              <ArrowLeft className="w-5 h-5" />
               <span>Back to Dashboard</span>
             </Link>
-            <div className=\"flex items-center space-x-2\">
-              <Sparkles className=\"w-5 h-5 text-purple-600\" />
-              <span className=\"font-bold\">Manage Prompts</span>
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+              <span className="font-bold">Manage Prompts</span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className=\"container mx-auto px-4 py-8\">
-        <div className=\"flex items-center justify-between mb-8\">
-          <h1 className=\"text-4xl font-bold\">Prompts</h1>
-          <Button onClick={handleCreate} className=\"bg-gradient-to-r from-purple-600 to-indigo-600\">
-            <Plus className=\"w-4 h-4 mr-2\" />
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-bold">Prompts</h1>
+          <Button onClick={handleCreate} className="bg-gradient-to-r from-purple-600 to-indigo-600">
+            <Plus className="w-4 h-4 mr-2" />
             Create Prompt
           </Button>
         </div>
@@ -183,25 +183,25 @@ export default function AdminPromptsPage() {
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <div className=\"grid md:grid-cols-2 lg:grid-cols-3 gap-6\">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {prompts.map((prompt) => (
-              <Card key={prompt.id} className=\"border-purple-200 dark:border-purple-800\">
-                <CardContent className=\"p-6\">
-                  <div className=\"flex items-start justify-between mb-3\">
-                    <Badge variant=\"secondary\">{prompt.category}</Badge>
-                    {prompt.isPremium && <Badge className=\"bg-amber-500\">Premium</Badge>}
+              <Card key={prompt.id} className="border-purple-200 dark:border-purple-800">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <Badge variant="secondary">{prompt.category}</Badge>
+                    {prompt.isPremium && <Badge className="bg-amber-500">Premium</Badge>}
                   </div>
-                  <h3 className=\"text-lg font-bold mb-2 line-clamp-2\">{prompt.title}</h3>
-                  <p className=\"text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4\">
+                  <h3 className="text-lg font-bold mb-2 line-clamp-2">{prompt.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4">
                     {prompt.promptText}
                   </p>
-                  <div className=\"flex gap-2\">
-                    <Button onClick={() => handleEdit(prompt)} size=\"sm\" variant=\"outline\">
-                      <Edit className=\"w-4 h-4 mr-1\" />
+                  <div className="flex gap-2">
+                    <Button onClick={() => handleEdit(prompt)} size="sm" variant="outline">
+                      <Edit className="w-4 h-4 mr-1" />
                       Edit
                     </Button>
-                    <Button onClick={() => handleDelete(prompt.id)} size=\"sm\" variant=\"destructive\">
-                      <Trash2 className=\"w-4 h-4\" />
+                    <Button onClick={() => handleDelete(prompt.id)} size="sm" variant="destructive">
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </CardContent>
@@ -212,13 +212,13 @@ export default function AdminPromptsPage() {
       </div>
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent className=\"max-w-2xl max-h-[90vh] overflow-y-auto\">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingPrompt ? 'Edit Prompt' : 'Create Prompt'}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className=\"space-y-4\">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Title *</label>
+              <label className="block text-sm font-medium mb-1">Title *</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -226,7 +226,7 @@ export default function AdminPromptsPage() {
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Category *</label>
+              <label className="block text-sm font-medium mb-1">Category *</label>
               <Input
                 value={formData.category}
                 onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -234,64 +234,64 @@ export default function AdminPromptsPage() {
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Tags (comma-separated)</label>
+              <label className="block text-sm font-medium mb-1">Tags (comma-separated)</label>
               <Input
                 value={formData.tags}
                 onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                placeholder=\"ai, content, instagram\"
+                placeholder="ai, content, instagram"
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Prompt Text *</label>
+              <label className="block text-sm font-medium mb-1">Prompt Text *</label>
               <textarea
                 value={formData.promptText}
                 onChange={(e) => setFormData({...formData, promptText: e.target.value})}
                 required
                 rows={6}
-                className=\"w-full p-2 border rounded\"
+                className="w-full p-2 border rounded"
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Example Output</label>
+              <label className="block text-sm font-medium mb-1">Example Output</label>
               <textarea
                 value={formData.exampleOutput}
                 onChange={(e) => setFormData({...formData, exampleOutput: e.target.value})}
                 rows={4}
-                className=\"w-full p-2 border rounded\"
+                className="w-full p-2 border rounded"
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">Example Image URL</label>
+              <label className="block text-sm font-medium mb-1">Example Image URL</label>
               <Input
                 value={formData.exampleImageUrl}
                 onChange={(e) => setFormData({...formData, exampleImageUrl: e.target.value})}
-                placeholder=\"https://example.com/image.jpg\"
+                placeholder="https://example.com/image.jpg"
               />
             </div>
-            <div className=\"flex items-center gap-2\">
+            <div className="flex items-center gap-2">
               <input
-                type=\"checkbox\"
+                type="checkbox"
                 checked={formData.isPremium}
                 onChange={(e) => setFormData({...formData, isPremium: e.target.checked})}
-                className=\"w-4 h-4\"
+                className="w-4 h-4"
               />
-              <label className=\"text-sm font-medium\">Premium Prompt</label>
+              <label className="text-sm font-medium">Premium Prompt</label>
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">SEO Title</label>
+              <label className="block text-sm font-medium mb-1">SEO Title</label>
               <Input
                 value={formData.seoTitle}
                 onChange={(e) => setFormData({...formData, seoTitle: e.target.value})}
               />
             </div>
             <div>
-              <label className=\"block text-sm font-medium mb-1\">SEO Description</label>
+              <label className="block text-sm font-medium mb-1">SEO Description</label>
               <Input
                 value={formData.seoDescription}
                 onChange={(e) => setFormData({...formData, seoDescription: e.target.value})}
               />
             </div>
-            <Button type=\"submit\" className=\"w-full bg-gradient-to-r from-purple-600 to-indigo-600\">
+            <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600">
               {editingPrompt ? 'Update' : 'Create'} Prompt
             </Button>
           </form>
