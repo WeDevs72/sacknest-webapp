@@ -256,8 +256,11 @@ export default function AdminPremiumPacksPage() {
               <Input
                 value={formData.fileUrl}
                 onChange={(e) => setFormData({...formData, fileUrl: e.target.value})}
-                placeholder="https://example.com/pack.pdf"
+                placeholder="https://example.com/pack.pdf or upload to Supabase Storage"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                💡 Tip: Upload PDF to Supabase Storage bucket 'premium-content' and paste the public URL here
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <input
