@@ -337,6 +337,61 @@ export async function POST(request) {
   }
 
   try {
+    // ==================== FILE UPLOAD ====================
+    
+    if (path === 'upload-pack-file') {
+      const authUser = getAuthUser(request)
+      if (!authUser) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
+      const formData = await request.formData()
+      const file = formData.get('file')
+      const packId = formData.get('packId')
+
+      if (!file) {
+        return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+      }
+
+      // Get file extension
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${packId}_${Date.now()}.${fileExt}`
+      const filePath = `premium-packs/${fileName}`
+
+      // Convert file to buffer
+      const bytes = await file.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      // Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('premium-content')
+        .upload(filePath, buffer, {
+          contentType: file.type,
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        return NextResponse.json({ 
+          error: 'Upload failed', 
+          message: uploadError.message 
+        }, { status: 500 })
+      }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('premium-content')
+        .getPublicUrl(filePath)
+
+      return NextResponse.json({
+        success: true,
+        fileUrl: urlData.publicUrl,
+        fileName: fileName,
+        filePath: filePath
+      })
+    }
+
     const body = await request.json()
 
     // ==================== AUTH: ADMIN LOGIN ====================
