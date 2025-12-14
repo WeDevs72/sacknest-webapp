@@ -124,9 +124,9 @@ export default function AdminPromptsPage() {
       }
     } catch (error) {
       toast({
-        title: \"Error\",
+        title: "Error",
         description: error.message,
-        variant: \"destructive\"
+        variant: "destructive"
       })
     }
   }
