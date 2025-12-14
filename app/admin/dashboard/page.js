@@ -197,15 +197,35 @@ export default function AdminDashboard() {
             </Card>
           </Link>
 
-          <Link href="/">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
+          <Link href="/admin/email-leads">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-green-200 dark:border-green-800">
               <CardContent className="p-6">
-                <Users className="w-12 h-12 text-gray-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">View Site</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Go to public website</p>
+                <Mail className="w-12 h-12 text-green-600 mb-4" />
+                <h3 className="text-xl font-bold mb-2">Email Leads</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">View and export subscribers</p>
               </CardContent>
             </Card>
           </Link>
+
+          <Link href="/admin/orders">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-indigo-200 dark:border-indigo-800">
+              <CardContent className="p-6">
+                <DollarSign className="w-12 h-12 text-indigo-600 mb-4" />
+                <h3 className="text-xl font-bold mb-2">Orders</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">View payment history</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <a href="/" target="_blank">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
+              <CardContent className="p-6">
+                <Users className="w-12 h-12 text-gray-600 mb-4" />
+                <h3 className="text-xl font-bold mb-2">View Live Site</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Open public website</p>
+              </CardContent>
+            </Card>
+          </a>
         </div>
       </div>
     </div>
