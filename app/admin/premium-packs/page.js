@@ -26,6 +26,8 @@ export default function AdminPremiumPacksPage() {
     fileUrl: '',
     enabled: true
   })
+  const [uploadingFile, setUploadingFile] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken')
