@@ -43,16 +43,25 @@ export default function AdminLoginPage() {
           router.push('/admin/dashboard')
         }, 1000)
       } else {
-        toast({
-          title: "Login Failed",
-          description: data.error || 'Invalid credentials',
-          variant: "destructive"
-        })
+        // Check if it's a database configuration issue
+        if (data.message && data.message.includes('Database not configured')) {
+          toast({
+            title: "⚠️ Database Not Configured",
+            description: "Please configure Supabase credentials in .env file. See SUPABASE_SETUP.md for instructions.",
+            variant: "destructive"
+          })
+        } else {
+          toast({
+            title: "Login Failed",
+            description: data.error || 'Invalid credentials',
+            variant: "destructive"
+          })
+        }
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "⚠️ Database Not Configured",
+        description: "Please configure Supabase credentials. See SUPABASE_SETUP.md for setup instructions.",
         variant: "destructive"
       })
     } finally {
