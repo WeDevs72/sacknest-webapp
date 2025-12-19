@@ -395,7 +395,7 @@ export default function Home() {
           </div>
           
           <div className="border-t border-purple-200 dark:border-purple-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>© 2025 SackNest. All rights reserved. Made with ❤️ for creators.</p>
+            <p>© 2025 SackNest. All rights reserved</p>
           </div>
         </div>
       </footer>
