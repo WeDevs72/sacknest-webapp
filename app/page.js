@@ -90,9 +90,9 @@ export default function Home() {
               <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
                 Blog
               </Link>
-              <Link href="/admin/login">
+              {/* <Link href="/admin/login">
                 <Button variant="outline" size="sm">Admin</Button>
-              </Link>
+              </Link> */}
             </nav>
           </div>
         </div>
