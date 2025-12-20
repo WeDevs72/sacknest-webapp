@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@sacknest.com"
+                    placeholder="Enter email"
                     required
                     className="pl-10"
                   />
@@ -132,14 +132,14 @@ export default function AdminLoginPage() {
               </Button>
             </form>
 
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            {/* <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <p className="text-sm text-center text-gray-600 dark:text-gray-400">
                 <strong>Default Credentials:</strong><br />
                 Email: admin@sacknest.com<br />
                 Password: admin123<br />
                 <span className="text-xs text-red-600 dark:text-red-400">Change these immediately!</span>
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </motion.div>
