@@ -1,41 +1,50 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // keeps standalone output for deployment
+  output: "standalone",
+
   images: {
-    unoptimized: true, // disables image optimization
+    unoptimized: true,
   },
+
+  // 🔥 REQUIRED: fix Supabase v2 + Webpack build error
+  transpilePackages: ["@supabase/supabase-js"],
+
   webpack(config, { dev }) {
     if (dev) {
       config.watchOptions = {
         poll: 2000,
         aggregateTimeout: 300,
-        ignored: ['**/node_modules'],
-      }
+        ignored: ["**/node_modules"],
+      };
     }
-    return config
+    return config;
   },
-  onDemandEntries: {
-    maxInactiveAge: 10000,
-    pagesBufferLength: 2,
-  },
+
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: "/(.*)",
         headers: [
-          { key: 'X-Frame-Options', value: 'ALLOWALL' },
-          { key: 'Content-Security-Policy', value: 'frame-ancestors *;' },
-          { key: 'Access-Control-Allow-Origin', value: process.env.CORS_ORIGINS || '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: '*' },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors *;",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: process.env.CORS_ORIGINS || "*",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "*",
+          },
         ],
       },
-    ]
+    ];
   },
-  // ⚡ Keep Webpack (disable Turbopack for now)
-  turbopack: {
-    enabled: false,
-  },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
