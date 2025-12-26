@@ -29,11 +29,11 @@ const verifyToken = (token) => {
 const razorpayInstance = () => {
   const keyId = process.env.RAZORPAY_KEY_ID
   const keySecret = process.env.RAZORPAY_KEY_SECRET
-  
+
   if (!keyId || !keySecret || keyId.includes('YOUR_KEY')) {
     return null
   }
-  
+
   return new Razorpay({
     key_id: keyId,
     key_secret: keySecret
@@ -47,7 +47,7 @@ const razorpayInstance = () => {
 const getAuthUser = (request) => {
   const authHeader = request.headers.get('authorization')
   if (!authHeader) return null
-  
+
   const token = authHeader.replace('Bearer ', '')
   return verifyToken(token)
 }
@@ -79,7 +79,7 @@ export async function GET(request) {
     }
 
     // ==================== PROMPTS ====================
-    
+
     if (path === 'prompts' || path.startsWith('prompts?')) {
       const url = new URL(request.url)
       const limit = parseInt(url.searchParams.get('limit') || '100')
@@ -119,20 +119,20 @@ export async function GET(request) {
     }
 
     // ==================== CATEGORIES ====================
-    
+
     if (path === 'categories') {
       const { data, error } = await supabase
         .from('prompts')
         .select('category')
 
       if (error) throw error
-      
+
       const categories = [...new Set(data.map(p => p.category))].filter(Boolean)
       return NextResponse.json(categories)
     }
 
     // ==================== BLOGS ====================
-    
+
     if (path === 'blogs' || path.startsWith('blogs?')) {
       const url = new URL(request.url)
       const publishedOnly = url.searchParams.get('published') !== 'false'
@@ -154,7 +154,7 @@ export async function GET(request) {
 
     if (path.match(/^blogs\/[^\/]+$/)) {
       const identifier = path.split('/')[1]
-      
+
       // Try to find by ID first, then by slug
       let { data, error } = await supabase
         .from('blogs')
@@ -168,7 +168,7 @@ export async function GET(request) {
           .select('*')
           .eq('slug', identifier)
           .single()
-        
+
         data = slugResult.data
         error = slugResult.error
       }
@@ -178,40 +178,90 @@ export async function GET(request) {
     }
 
     // ==================== PREMIUM PACKS ====================
-    
+
     if (path === 'premium-packs' || path.startsWith('premium-packs?')) {
       const url = new URL(request.url)
       const enabledOnly = url.searchParams.get('enabled') !== 'false'
-
+    
       let query = supabase
         .from('premium_packs')
         .select('*')
-        .order('createdAt', { ascending: false })
-
+    
       if (enabledOnly) {
         query = query.eq('enabled', true)
       }
-
+    
       const { data, error } = await query
-
-      if (error) throw error
+    
+      if (error) {
+        console.error("PREMIUM PACKS ERROR:", error)
+        return NextResponse.json({
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        }, { status: 500 })
+      }
+    
       return NextResponse.json(data || [])
     }
+    
 
-    if (path.match(/^premium-packs\/[^\/]+$/)) {
-      const id = path.split('/')[1]
-      const { data, error } = await supabase
-        .from('premium_packs')
-        .select('*, pack_prompts(promptId)')
-        .eq('id', id)
-        .single()
+    // UPDATE PREMIUM PACK
+    // if (request.method === 'PUT' && path.match(/^premium-packs\/[^\/]+$/)) {
+    //   const id = path.split('/')[1]
+    //   const formData = await request.formData()
 
-      if (error) throw error
-      return NextResponse.json(data)
-    }
+    //   const title = formData.get('title')
+    //   const description = formData.get('description')
+    //   const enabled = formData.get('enabled') === 'true'
+    //   const file = formData.get('file')
+
+    //   let pdfUrl = null
+
+    //   if (file) {
+    //     const fileName = `${Date.now()}-${file.name}`
+
+    //     const { error: uploadError } = await supabase.storage
+    //       .from('premium_packs')
+    //       .upload(`pdfs/${fileName}`, file)
+
+    //     if (uploadError) {
+    //       return NextResponse.json(
+    //         { error: 'Upload failed', details: uploadError.message },
+    //         { status: 400 }
+    //       )
+    //     }
+
+    //     const { data: publicUrlData } = supabase.storage
+    //       .from('premium_packs')
+    //       .getPublicUrl(`pdfs/${fileName}`)
+
+    //     pdfUrl = publicUrlData.publicUrl
+    //   }
+
+    //   const updatePayload = {
+    //     title,
+    //     description,
+    //     enabled,
+    //     ...(pdfUrl && { pdf_url: pdfUrl })
+    //   }
+
+    //   const { data, error } = await supabase
+    //     .from('premium_packs')
+    //     .update(updatePayload)
+    //     .eq('id', id)
+    //     .select()
+    //     .single()
+
+    //   if (error) throw error
+    //   return NextResponse.json(data)
+    // }
+
+
 
     // ==================== ADMIN: EMAIL LEADS ====================
-    
+
     if (path === 'admin/email-leads') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -228,7 +278,7 @@ export async function GET(request) {
     }
 
     // ==================== ADMIN: ORDERS ====================
-    
+
     if (path === 'admin/orders') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -245,10 +295,10 @@ export async function GET(request) {
     }
 
     // ==================== ORDER DETAILS ====================
-    
+
     if (path.match(/^orders\/[^\/]+$/)) {
       const orderId = path.split('/')[1]
-      
+
       // Find order by Razorpay order ID
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -275,10 +325,10 @@ export async function GET(request) {
     }
 
     // ==================== SECURE DOWNLOAD ====================
-    
+
     if (path.match(/^download\/[^\/]+$/)) {
       const orderId = path.split('/')[1]
-      
+
       // Verify order exists and is paid
       const { data: order, error: orderError } = await supabase
         .from('orders')
@@ -319,8 +369,8 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('API Error:', error)
-    return NextResponse.json({ 
-      error: error.message || 'Internal server error' 
+    return NextResponse.json({
+      error: error.message || 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -338,7 +388,7 @@ export async function POST(request) {
 
   try {
     // ==================== FILE UPLOAD ====================
-    
+
     if (path === 'upload-pack-file') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -356,7 +406,7 @@ export async function POST(request) {
       // Get file extension
       const fileExt = file.name.split('.').pop()
       const fileName = `${packId}_${Date.now()}.${fileExt}`
-      const filePath = `premium-packs/${fileName}`
+      const filePath = `packs/${fileName}`
 
       // Convert file to buffer
       const bytes = await file.arrayBuffer()
@@ -364,7 +414,7 @@ export async function POST(request) {
 
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('premium-content')
+        .from('premium_packs')
         .upload(filePath, buffer, {
           contentType: file.type,
           cacheControl: '3600',
@@ -373,20 +423,23 @@ export async function POST(request) {
 
       if (uploadError) {
         console.error('Upload error:', uploadError)
-        return NextResponse.json({ 
-          error: 'Upload failed', 
-          message: uploadError.message 
+        return NextResponse.json({
+          error: 'Upload failed',
+          message: uploadError.message
         }, { status: 500 })
       }
 
       // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('premium-content')
-        .getPublicUrl(filePath)
+      const { data } = supabase.storage
+      .from('premium_packs')
+      .getPublicUrl(filePath)
+
+      const fileUrl = data?.publicUrl || data?.publicURL
+
 
       return NextResponse.json({
         success: true,
-        fileUrl: urlData.publicUrl,
+        fileUrl: fileUrl,
         fileName: fileName,
         filePath: filePath
       })
@@ -395,7 +448,7 @@ export async function POST(request) {
     const body = await request.json()
 
     // ==================== AUTH: ADMIN LOGIN ====================
-    
+
     if (path === 'auth/admin/login') {
       const { email, password } = body
 
@@ -430,11 +483,11 @@ export async function POST(request) {
     }
 
     // ==================== AUTH: ADMIN REGISTER ====================
-    
+
     if (path === 'auth/admin/register') {
       const authUser = getAuthUser(request)
       // Only allow first admin or existing admin to create new admins
-      
+
       const { email, password } = body
 
       if (!email || !password) {
@@ -474,7 +527,7 @@ export async function POST(request) {
     }
 
     // ==================== EMAIL LEADS ====================
-    
+
     if (path === 'email-leads') {
       const { email, source = 'unknown' } = body
 
@@ -509,7 +562,7 @@ export async function POST(request) {
     }
 
     // ==================== ADMIN: CREATE PROMPT ====================
-    
+
     if (path === 'admin/prompts') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -545,7 +598,7 @@ export async function POST(request) {
     }
 
     // ==================== ADMIN: CREATE BLOG ====================
-    
+
     if (path === 'admin/blogs') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -578,7 +631,7 @@ export async function POST(request) {
     }
 
     // ==================== ADMIN: CREATE PREMIUM PACK ====================
-    
+
     if (path === 'admin/premium-packs') {
       const authUser = getAuthUser(request)
       if (!authUser) {
@@ -611,11 +664,11 @@ export async function POST(request) {
     }
 
     // ==================== RAZORPAY: CREATE ORDER ====================
-    
+
     if (path === 'razorpay/create-order') {
       const razorpay = razorpayInstance()
       if (!razorpay) {
-        return NextResponse.json({ 
+        return NextResponse.json({
           error: 'Razorpay not configured',
           message: 'Please add Razorpay credentials to .env file'
         }, { status: 503 })
@@ -674,7 +727,7 @@ export async function POST(request) {
     }
 
     // ==================== RAZORPAY: VERIFY PAYMENT ====================
-    
+
     if (path === 'razorpay/verify-payment') {
       const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = body
 
@@ -720,8 +773,8 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('API Error:', error)
-    return NextResponse.json({ 
-      error: error.message || 'Internal server error' 
+    return NextResponse.json({
+      error: error.message || 'Internal server error'
     }, { status: 500 })
   }
 }
@@ -743,10 +796,10 @@ export async function PUT(request) {
     const body = await request.json()
 
     // ==================== UPDATE PROMPT ====================
-    
+
     if (path.match(/^admin\/prompts\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('prompts')
         .update(body)
@@ -764,10 +817,10 @@ export async function PUT(request) {
     }
 
     // ==================== UPDATE BLOG ====================
-    
+
     if (path.match(/^admin\/blogs\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('blogs')
         .update(body)
@@ -785,10 +838,10 @@ export async function PUT(request) {
     }
 
     // ==================== UPDATE PREMIUM PACK ====================
-    
+
     if (path.match(/^admin\/premium-packs\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('premium_packs')
         .update(body)
@@ -828,10 +881,10 @@ export async function DELETE(request) {
     }
 
     // ==================== DELETE PROMPT ====================
-    
+
     if (path.match(/^admin\/prompts\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('prompts')
         .delete()
@@ -842,10 +895,10 @@ export async function DELETE(request) {
     }
 
     // ==================== DELETE BLOG ====================
-    
+
     if (path.match(/^admin\/blogs\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('blogs')
         .delete()
@@ -856,10 +909,10 @@ export async function DELETE(request) {
     }
 
     // ==================== DELETE PREMIUM PACK ====================
-    
+
     if (path.match(/^admin\/premium-packs\/[^\/]+$/)) {
       const id = path.split('/')[2]
-      
+
       const { error } = await supabase
         .from('premium_packs')
         .delete()

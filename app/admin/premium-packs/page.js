@@ -361,25 +361,39 @@ export default function AdminPremiumPacksPage() {
                   </p>
                 )}
                 <p className="text-xs text-gray-500 mt-1">
-                  Supports PDF and ZIP files up to 50MB
+                  Supports PDF and ZIP files up to 5MB
                 </p>
               </div>
 
               {/* Generated URL Display */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Generated Download URL</label>
-                <Input
-                  value={formData.fileUrl}
-                  onChange={(e) => setFormData({...formData, fileUrl: e.target.value})}
-                  placeholder="URL will be generated after file upload"
-                  readOnly={uploadingFile}
-                />
-                {formData.fileUrl && (
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                    ✓ File URL ready for download
-                  </p>
-                )}
-              </div>
+              <div className="flex gap-2 items-center">
+  <Input
+    value={formData.fileUrl ?? ""}
+    readOnly
+    placeholder="File URL will appear after upload"
+  />
+
+  <button
+    type="button"
+    disabled={!formData.fileUrl}
+    onClick={() => navigator.clipboard.writeText(formData.fileUrl)}
+    className="px-3 py-2 border rounded"
+  >
+    Copy
+  </button>
+
+  {formData.fileUrl && (
+    <a
+      href={formData.fileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="px-3 py-2 border rounded"
+    >
+      Open
+    </a>
+  )}
+</div>
+
             </div>
             <div className="flex items-center gap-2">
               <input

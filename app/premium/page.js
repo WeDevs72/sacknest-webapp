@@ -290,15 +290,7 @@ export default function PremiumPage() {
           viewport={{ once: true }}
           className="mt-20 text-center"
         >
-          <Card className="max-w-2xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
-            <CardContent className="p-8">
-              <div className="text-4xl mb-4">🛡️</div>
-              <h3 className="text-2xl font-bold mb-3">30-Day Money Back Guarantee</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Not satisfied? Get a full refund within 30 days, no questions asked.
-              </p>
-            </CardContent>
-          </Card>
+         
         </motion.div>
       </div>
 
