@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import dynamic from "next/dynamic"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,6 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Sparkles, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 
+// ⭐ Load Markdown Editor (SSR Safe)
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
+  ssr: false
+})
+
 export default function AdminBlogsPage() {
   const router = useRouter()
   const { toast } = useToast()
@@ -18,6 +24,7 @@ export default function AdminBlogsPage() {
   const [loading, setLoading] = useState(true)
   const [showDialog, setShowDialog] = useState(false)
   const [editingBlog, setEditingBlog] = useState(null)
+
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -42,9 +49,7 @@ export default function AdminBlogsPage() {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
-      if (Array.isArray(data)) {
-        setBlogs(data)
-      }
+      if (Array.isArray(data)) setBlogs(data)
     } catch (error) {
       console.error('Error fetching blogs:', error)
     } finally {
@@ -119,8 +124,8 @@ export default function AdminBlogsPage() {
 
   const handleDelete = async (id) => {
     if (!confirm('Are you sure you want to delete this blog?')) return
-
     const token = localStorage.getItem('adminToken')
+
     try {
       const response = await fetch(`/api/admin/blogs/${id}`, {
         method: 'DELETE',
@@ -131,7 +136,7 @@ export default function AdminBlogsPage() {
         toast({ title: "Deleted", description: 'Blog deleted successfully' })
         fetchBlogs(token)
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: 'Failed to delete blog',
@@ -142,6 +147,8 @@ export default function AdminBlogsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+
+      {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -157,6 +164,7 @@ export default function AdminBlogsPage() {
         </div>
       </header>
 
+      {/* Page */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold">Blog Posts</h1>
@@ -178,8 +186,12 @@ export default function AdminBlogsPage() {
                       {blog.published ? 'Published' : 'Draft'}
                     </Badge>
                   </div>
+
                   <h3 className="text-lg font-bold mb-2">{blog.title}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">/{blog.slug}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    /{blog.slug}
+                  </p>
+
                   <div className="flex gap-2">
                     <Button onClick={() => handleEdit(blog)} size="sm" variant="outline">
                       <Edit className="w-4 h-4 mr-1" />
@@ -196,40 +208,61 @@ export default function AdminBlogsPage() {
         )}
       </div>
 
+      {/* Create / Edit Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingBlog ? 'Edit Blog' : 'Create Blog'}</DialogTitle>
           </DialogHeader>
+
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Title */}
             <div>
               <label className="block text-sm font-medium mb-1">Title *</label>
               <Input
                 value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                onChange={(e) => {
+                  const title = e.target.value
+                  setFormData({
+                    ...formData,
+                    title,
+                    slug: title
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]+/g, '-')
+                      .replace(/(^-|-$)/g, '')
+                  })
+                }}
                 required
               />
             </div>
+
+            {/* Slug */}
             <div>
               <label className="block text-sm font-medium mb-1">Slug *</label>
               <Input
                 value={formData.slug}
                 onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                placeholder="my-blog-post"
                 required
               />
             </div>
+
+            {/* Markdown Editor */}
             <div>
               <label className="block text-sm font-medium mb-1">Content (Markdown) *</label>
-              <textarea
-                value={formData.contentMarkdown}
-                onChange={(e) => setFormData({...formData, contentMarkdown: e.target.value})}
-                required
-                rows={12}
-                className="w-full p-2 border rounded font-mono text-sm"
-                placeholder="# Heading\n\nYour content here..."
-              />
+
+              <div data-color-mode="light" className="border rounded">
+                <MDEditor
+                  value={formData.contentMarkdown}
+                  height={400}
+                  onChange={(val) =>
+                    setFormData({ ...formData, contentMarkdown: val || "" })
+                  }
+                />
+              </div>
             </div>
+
+            {/* Publish Toggle */}
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -239,6 +272,8 @@ export default function AdminBlogsPage() {
               />
               <label className="text-sm font-medium">Publish immediately</label>
             </div>
+
+            {/* SEO Fields */}
             <div>
               <label className="block text-sm font-medium mb-1">SEO Title</label>
               <Input
@@ -246,6 +281,7 @@ export default function AdminBlogsPage() {
                 onChange={(e) => setFormData({...formData, seoTitle: e.target.value})}
               />
             </div>
+
             <div>
               <label className="block text-sm font-medium mb-1">SEO Description</label>
               <Input
@@ -253,6 +289,7 @@ export default function AdminBlogsPage() {
                 onChange={(e) => setFormData({...formData, seoDescription: e.target.value})}
               />
             </div>
+
             <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-indigo-600">
               {editingBlog ? 'Update' : 'Create'} Blog
             </Button>
