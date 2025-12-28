@@ -99,44 +99,138 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          <Badge className="mb-6 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-            <Sparkles className="w-3 h-3 mr-1" />
-            Premium AI Prompt Library
-          </Badge>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-            Create Viral Content
-            <br />
-            With AI Prompts
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 leading-relaxed">
-            Unlock 500+ battle-tested AI prompts for Instagram, YouTube, TikTok & more. 
-            <br className="hidden md:block" />
-            Used by <span className="font-semibold text-purple-600 dark:text-purple-400">10,000+ creators</span> to save time and grow faster.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/prompts">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg">
-                Browse Free Prompts
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/premium">
-              <Button size="lg" variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-8 py-6 text-lg">
-                Get Premium Packs
-              </Button>
-            </Link>
-          </div>
-        </motion.div>
+      <section className="container mx-auto px-4 py-12 md:py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Badge className="mb-6 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 px-4 py-2">
+              <Sparkles className="w-4 h-4 mr-2" />
+              #1 AI Prompt Library for Creators
+            </Badge>
+            
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              Create{' '}
+              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+                Viral Content
+              </span>
+              {' '}with AI Prompts
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+              500+ battle-tested AI prompts for Instagram, YouTube, TikTok & more. 
+              Save 10+ hours weekly with prompts used by top creators.
+            </p>
+
+            {/* Stats */}
+            {/* <div className="flex flex-wrap gap-8 mb-8">
+              <div>
+                <div className="text-3xl font-bold text-purple-600">10K+</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Active Creators</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-purple-600">500+</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">AI Prompts</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-purple-600">50K+</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Content Created</div>
+              </div>
+            </div> */}
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <Link href="/prompts">
+                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
+                  Get Started Free
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/premium">
+                <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-8 py-6 text-lg">
+                  View Premium Packs
+                </Button>
+              </Link>
+            </div>
+
+          </motion.div>
+
+          {/* Right Visual */}
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
+          >
+            {/* Main Image Container */}
+            <div className="relative z-10">
+              <div className="bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-3xl p-8 shadow-2xl">
+                {/* Placeholder for hero image */}
+                <div className="aspect-square bg-gradient-to-br from-purple-200 to-indigo-200 dark:from-purple-800 dark:to-indigo-800 rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <Sparkles className="w-12 h-12 mx-auto mb-4 text-purple-600" />
+                    <p className="text-2xl font-bold text-purple-600">AI Prompt Magic</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Hero Image Placeholder</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Card 1 - Top Right */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-xl border border-purple-100 dark:border-purple-900"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">+24%</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Engagement</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating Card 2 - Bottom Left */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-xl border border-purple-100 dark:border-purple-900"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">1K+</div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">Creators</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating Card 3 - Middle Right */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+                className="absolute top-1/2 -right-8 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-2xl p-3 shadow-xl border border-purple-100 dark:border-purple-900"
+              >
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-yellow-500" />
+                  <span className="text-sm font-semibold">Save 10hrs/week</span>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Background Gradient Blur */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 blur-3xl -z-10"></div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Features Section */}
@@ -253,48 +347,60 @@ export default function Home() {
       </section>
 
       {/* Email Capture Section */}
-      <section className="container mx-auto px-4 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="max-w-2xl mx-auto"
+      <section className="container mx-auto px-4 py-24">
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6 }}
+    viewport={{ once: true }}
+    className="max-w-3xl mx-auto"
+  >
+    <Card className="relative overflow-hidden border border-white/20 backdrop-blur-xl bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 shadow-2xl rounded-3xl">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent)]" />
+
+      <CardContent className="p-10 md:p-14 text-center text-white relative z-10">
+        
+        <Mail className="w-16 h-16 mx-auto mb-6 opacity-95 drop-shadow-lg" />
+
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+          Get 10 Free Premium Prompts
+        </h2>
+
+        <p className="text-lg md:text-xl opacity-90 mb-10">
+          Join <span className="font-semibold">10,000+ creators</span> getting weekly AI tips & exclusive prompts
+        </p>
+
+        <form 
+          onSubmit={handleEmailSubmit} 
+          className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
         >
-          <Card className="bg-gradient-to-br from-purple-600 to-indigo-600 border-none text-white">
-            <CardContent className="p-8 md:p-12 text-center">
-              <Mail className="w-16 h-16 mx-auto mb-6 opacity-90" />
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Get 10 Free Premium Prompts</h2>
-              <p className="text-lg mb-8 opacity-90">
-                Join 10,000+ creators getting weekly AI tips & exclusive prompts
-              </p>
-              
-              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-white text-gray-900 border-none text-lg"
-                />
-                <Button 
-                  type="submit" 
-                  size="lg"
-                  disabled={emailSubmitting}
-                  className="bg-white text-purple-600 hover:bg-gray-100"
-                >
-                  {emailSubmitting ? 'Sending...' : 'Get Free Pack'}
-                </Button>
-              </form>
-              
-              <p className="text-sm mt-4 opacity-75">
-                No spam. Unsubscribe anytime. We respect your privacy.
-              </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </section>
+          <Input
+            type="email"
+            placeholder="your@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="bg-white/95 shadow-xl text-gray-900 border-none text-lg h-12 rounded-xl"
+          />
+
+          <Button 
+            type="submit"
+            size="lg"
+            disabled={emailSubmitting}
+            className="h-12 rounded-xl text-white text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition"
+          >
+            {emailSubmitting ? 'Sending...' : 'Get Free Pack'}
+          </Button>
+        </form>
+
+        <p className="text-sm mt-6 opacity-80">
+          No spam. Unsubscribe anytime. We respect your privacy.
+        </p>
+      </CardContent>
+    </Card>
+  </motion.div>
+</section>
+
 
       {/* Social Proof Section */}
       <section className="container mx-auto px-4 py-20">
