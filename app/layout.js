@@ -22,12 +22,8 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           {children}
-        </Providers>
-
-        {/* Google Analytics */}
-        {process.env.NODE_ENV === "production" && (
+        </Providers>       
           <GoogleAnalytics gaId={process.env.G_TAG} />
-        )}
       </body>
     </html>
   )
