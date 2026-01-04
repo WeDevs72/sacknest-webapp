@@ -1048,4 +1048,56 @@ export async function DELETE(request) {
     console.error('API Error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
 }
+
+  // ==================== DELETE TRENDING IMAGE ====================
+  if (path.match(/^admin\/trending-ai-images\/[^\/]+$/)) {
+    const authUser = getAuthUser(request)
+    if (!authUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const id = path.split('/')[2]
+
+    // Get record first
+    const { data: record, error: fetchError } = await supabase
+      .from('trending_ai_images')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !record) {
+      return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+    }
+
+    // Extract storage path
+    const imageUrl = record.imageUrl
+    const storagePath = imageUrl.split('/trending-images/')[1]
+
+    // Delete from storage
+    const { error: storageError } = await supabase.storage
+      .from('trending-images')
+      .remove([storagePath])
+
+    if (storageError) {
+      console.error('Storage delete failed:', storageError)
+      return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 })
+    }
+
+    // Delete DB row
+    const { error: deleteError } = await supabase
+      .from('trending_ai_images')
+      .delete()
+      .eq('id', id)
+
+    if (deleteError) {
+      console.error(deleteError)
+      return NextResponse.json({ error: 'Failed to delete record' }, { status: 500 })
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Trending image deleted successfully'
+    })
+  }
