@@ -43,17 +43,11 @@ export default function AdminTrendingImagesPage() {
 
   const fetchImages = async (token) => {
     try {
-      const res = await fetch("/api/trending-ai-images", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-
+      const res = await fetch("/api/trending-ai-images")
       const data = await res.json()
-
-      if (Array.isArray(data)) {
-        setImages(data)
-      }
-    } catch (err) {
-      console.error(err)
+      if (Array.isArray(data)) setImages(data)
+    } catch {
+      console.log("Error fetching")
     } finally {
       setLoading(false)
     }
@@ -109,7 +103,6 @@ export default function AdminTrendingImagesPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     const token = localStorage.getItem("adminToken")
     setUploading(true)
 
@@ -122,13 +115,17 @@ export default function AdminTrendingImagesPage() {
 
       if (formData.image) data.append("image", formData.image)
 
-      const res = await fetch("/api/admin/trending-ai-images", {
-        method: "POST",
+      const url = editingImage
+        ? `/api/admin/trending-ai-images/${editingImage.id}`
+        : `/api/admin/trending-ai-images`
+
+      const res = await fetch(url, {
+        method: editingImage ? "PUT" : "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: data
       })
 
-      if (!res.ok) throw new Error("Failed")
+      if (!res.ok) throw new Error("Failed to save")
 
       toast({
         title: editingImage ? "Updated" : "Created",
@@ -150,6 +147,7 @@ export default function AdminTrendingImagesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+
       {/* Header */}
       <header className="bg-white dark:bg-gray-900 border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
@@ -189,11 +187,7 @@ export default function AdminTrendingImagesPage() {
             {images.map((img) => (
               <Card key={img.id} className="border-purple-200 dark:border-purple-800">
                 <CardContent className="p-4">
-                  <img
-                    src={img.imageUrl}
-                    className="w-full h-48 object-cover rounded mb-3"
-                  />
-
+                  <img src={img.imageUrl} className="w-full h-48 object-cover rounded mb-3" />
                   <h3 className="font-bold text-lg">{img.title}</h3>
 
                   <p className="text-sm text-gray-600 line-clamp-2 mt-1">
@@ -228,6 +222,13 @@ export default function AdminTrendingImagesPage() {
               {editingImage ? "Edit Trending Image" : "Add Trending Image"}
             </DialogTitle>
           </DialogHeader>
+
+          {editingImage && (
+            <img
+              src={editingImage.imageUrl}
+              className="w-full h-52 object-cover rounded mb-3"
+            />
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -274,7 +275,7 @@ export default function AdminTrendingImagesPage() {
             </div>
 
             <div>
-              <label>Upload Image *</label>
+              <label>Upload Image {editingImage ? "(optional)" : "*"}</label>
               <input
                 type="file"
                 accept="image/*"

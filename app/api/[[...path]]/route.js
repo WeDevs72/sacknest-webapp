@@ -913,12 +913,10 @@ export async function PUT(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-
     // ==================== UPDATE PROMPT ====================
-
     if (path.match(/^admin\/prompts\/[^\/]+$/)) {
       const id = path.split('/')[2]
+      const body = await request.json()
 
       const { error } = await supabase
         .from('prompts')
@@ -937,9 +935,9 @@ export async function PUT(request) {
     }
 
     // ==================== UPDATE BLOG ====================
-
     if (path.match(/^admin\/blogs\/[^\/]+$/)) {
       const id = path.split('/')[2]
+      const body = await request.json()
 
       const { error } = await supabase
         .from('blogs')
@@ -958,9 +956,9 @@ export async function PUT(request) {
     }
 
     // ==================== UPDATE PREMIUM PACK ====================
-
     if (path.match(/^admin\/premium-packs\/[^\/]+$/)) {
       const id = path.split('/')[2]
+      const body = await request.json()
 
       const { error } = await supabase
         .from('premium_packs')
@@ -978,6 +976,87 @@ export async function PUT(request) {
       return NextResponse.json(data)
     }
 
+    // ==================== UPDATE TRENDING IMAGE ====================
+    if (path.match(/^admin\/trending-ai-images\/[^\/]+$/)) {
+      const id = path.split('/')[2]
+
+      const contentType = request.headers.get("content-type") || ""
+      let updatedFields = {}
+
+      // ---------- FORM DATA (with optional image) ----------
+      if (contentType.includes("multipart/form-data")) {
+        const formData = await request.formData()
+
+        const promptText = formData.get("promptText")
+        const aiToolName = formData.get("aiToolName")
+        const aiToolUrl = formData.get("aiToolUrl")
+        const title = formData.get("title")
+        const image = formData.get("image")
+
+        updatedFields = { promptText, aiToolName, aiToolUrl, title }
+
+        if (image) {
+          const ext = image.name?.split(".").pop() || "jpg"
+          const filePath = `images/${id}.${ext}`
+
+          const bytes = await image.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+
+          const { error: uploadError } = await supabase.storage
+            .from("trending-images")
+            .upload(filePath, buffer, {
+              contentType: image.type,
+              cacheControl: "3600",
+              upsert: true
+            })
+
+          if (uploadError) {
+            console.error(uploadError)
+            return NextResponse.json(
+              { error: "Image upload failed" },
+              { status: 500 }
+            )
+          }
+
+          const { data: urlData } = supabase.storage
+            .from("trending-images")
+            .getPublicUrl(filePath)
+
+          updatedFields.imageUrl = urlData?.publicUrl
+        }
+      }
+
+      // ---------- JSON UPDATE ----------
+      else {
+        const body = await request.json()
+        updatedFields = body
+      }
+
+      const { data, error } = await supabase
+        .from("trending_ai_images")
+        .update({
+          ...updatedFields,
+          updatedAt: new Date().toISOString()
+        })
+        .eq("id", id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error(error)
+        return NextResponse.json(
+          { error: "Failed to update record" },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Trending image updated successfully",
+        data
+      })
+    }
+
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   } catch (error) {
@@ -985,6 +1064,7 @@ export async function PUT(request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+
 
 export async function DELETE(request) {
   const { pathname } = new URL(request.url)
@@ -1000,8 +1080,53 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // ==================== DELETE PROMPT ====================
+    // ==================== DELETE TRENDING IMAGE ====================
+    if (path.match(/^admin\/trending-ai-images\/[^\/]+$/)) {
+      const id = path.split('/')[2]
 
+      // Get record first
+      const { data: record, error: fetchError } = await supabase
+        .from('trending_ai_images')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (fetchError || !record) {
+        return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+      }
+
+      // Extract storage path
+      const imageUrl = record.imageUrl
+      const storagePath = imageUrl.split('/trending-images/')[1]
+
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('trending-images')
+        .remove([storagePath])
+
+      if (storageError) {
+        console.error('Storage delete failed:', storageError)
+        return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 })
+      }
+
+      // Delete DB row
+      const { error: deleteError } = await supabase
+        .from('trending_ai_images')
+        .delete()
+        .eq('id', id)
+
+      if (deleteError) {
+        console.error(deleteError)
+        return NextResponse.json({ error: 'Failed to delete record' }, { status: 500 })
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Trending image deleted successfully'
+      })
+    }
+
+    // ==================== DELETE PROMPT ====================
     if (path.match(/^admin\/prompts\/[^\/]+$/)) {
       const id = path.split('/')[2]
 
@@ -1015,7 +1140,6 @@ export async function DELETE(request) {
     }
 
     // ==================== DELETE BLOG ====================
-
     if (path.match(/^admin\/blogs\/[^\/]+$/)) {
       const id = path.split('/')[2]
 
@@ -1029,7 +1153,6 @@ export async function DELETE(request) {
     }
 
     // ==================== DELETE PREMIUM PACK ====================
-
     if (path.match(/^admin\/premium-packs\/[^\/]+$/)) {
       const id = path.split('/')[2]
 
@@ -1048,56 +1171,6 @@ export async function DELETE(request) {
     console.error('API Error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-
 }
 
-  // ==================== DELETE TRENDING IMAGE ====================
-  if (path.match(/^admin\/trending-ai-images\/[^\/]+$/)) {
-    const authUser = getAuthUser(request)
-    if (!authUser) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
 
-    const id = path.split('/')[2]
-
-    // Get record first
-    const { data: record, error: fetchError } = await supabase
-      .from('trending_ai_images')
-      .select('*')
-      .eq('id', id)
-      .single()
-
-    if (fetchError || !record) {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 })
-    }
-
-    // Extract storage path
-    const imageUrl = record.imageUrl
-    const storagePath = imageUrl.split('/trending-images/')[1]
-
-    // Delete from storage
-    const { error: storageError } = await supabase.storage
-      .from('trending-images')
-      .remove([storagePath])
-
-    if (storageError) {
-      console.error('Storage delete failed:', storageError)
-      return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 })
-    }
-
-    // Delete DB row
-    const { error: deleteError } = await supabase
-      .from('trending_ai_images')
-      .delete()
-      .eq('id', id)
-
-    if (deleteError) {
-      console.error(deleteError)
-      return NextResponse.json({ error: 'Failed to delete record' }, { status: 500 })
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: 'Trending image deleted successfully'
-    })
-  }
