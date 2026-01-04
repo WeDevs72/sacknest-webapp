@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Sparkles, FileText, DollarSign, Mail, Package, LogOut, Users } from 'lucide-react'
+import { Sparkles, FileText, DollarSign, Mail, Package, LogOut, Users, Image } from 'lucide-react'
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -172,6 +172,16 @@ export default function AdminDashboard() {
               <CardContent className="p-6">
                 <Package className="w-12 h-12 text-amber-600 mb-4" />
                 <h3 className="text-xl font-bold mb-2">Premium Packs</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Manage premium offerings</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/trending-images">
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-200 dark:border-amber-800">
+              <CardContent className="p-6">
+                <Image className="w-12 h-12 text-amber-600 mb-4" />
+                <h3 className="text-xl font-bold mb-2">Trending Images</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">Manage premium offerings</p>
               </CardContent>
             </Card>

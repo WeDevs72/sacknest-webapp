@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { supabase, isSupabaseConfigured } from '@/lib/supabase'
+import { isSupabaseConfigured } from '@/lib/supabase'
+import { supabaseServer as supabase } from '@/lib/supabase-server'
 import bcrypt from 'bcryptjs'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
@@ -77,6 +78,37 @@ export async function GET(request) {
         razorpayConfigured: razorpayInstance() !== null
       })
     }
+
+
+
+    // ==================== TRENDING AI IMAGES ====================
+
+    if (path === 'trending-ai-images' || path.startsWith('trending-ai-images?')) {
+      const url = new URL(request.url)
+      const limit = parseInt(url.searchParams.get('limit') || '100')
+
+      const { data, error } = await supabase
+        .from('trending_ai_images')
+        .select('*')
+        .order('createdAt', { ascending: false })
+        .limit(limit)
+
+      if (error) throw error
+      return NextResponse.json(data || [])
+    }
+
+    if (path.match(/^trending-ai-images\/[^\/]+$/)) {
+      const id = path.split('/')[1]
+      const { data, error } = await supabase
+        .from('trending_ai_images')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (error) throw error
+      return NextResponse.json(data)
+    }
+
 
     // ==================== PROMPTS ====================
 
@@ -182,17 +214,17 @@ export async function GET(request) {
     if (path === 'premium-packs' || path.startsWith('premium-packs?')) {
       const url = new URL(request.url)
       const enabledOnly = url.searchParams.get('enabled') !== 'false'
-    
+
       let query = supabase
         .from('premium_packs')
         .select('*')
-    
+
       if (enabledOnly) {
         query = query.eq('enabled', true)
       }
-    
+
       const { data, error } = await query
-    
+
       if (error) {
         console.error("PREMIUM PACKS ERROR:", error)
         return NextResponse.json({
@@ -202,10 +234,10 @@ export async function GET(request) {
           code: error.code
         }, { status: 500 })
       }
-    
+
       return NextResponse.json(data || [])
     }
-    
+
 
     // UPDATE PREMIUM PACK
     // if (request.method === 'PUT' && path.match(/^premium-packs\/[^\/]+$/)) {
@@ -431,8 +463,8 @@ export async function POST(request) {
 
       // Get public URL
       const { data } = supabase.storage
-      .from('premium_packs')
-      .getPublicUrl(filePath)
+        .from('premium_packs')
+        .getPublicUrl(filePath)
 
       const fileUrl = data?.publicUrl || data?.publicURL
 
@@ -442,6 +474,90 @@ export async function POST(request) {
         fileUrl: fileUrl,
         fileName: fileName,
         filePath: filePath
+      })
+    }
+    //===================== ADD TRENDING IMAGES =====================
+    if (path === 'admin/trending-ai-images') {
+      const authUser = getAuthUser(request)
+      if (!authUser) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
+      const formData = await request.formData()
+
+      const image = formData.get("image")
+      const promptText = formData.get("promptText")
+      const aiToolName = formData.get("aiToolName")
+      const aiToolUrl = formData.get("aiToolUrl")
+      const title = formData.get("title")
+
+      if (!image) {
+        return NextResponse.json({ error: "Image is required" }, { status: 400 })
+      }
+      if (!promptText || !aiToolName) {
+        return NextResponse.json({ error: "promptText and aiToolName required" }, { status: 400 })
+      }
+
+      const id = `ai_${Date.now()}`
+      const ext = image.name?.split('.').pop() || "jpg"
+      const filePath = `images/${id}.${ext}`
+
+      const bytes = await image.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from("trending-images")
+        .upload(filePath, buffer, {
+          contentType: image.type,
+          cacheControl: "3600",
+          upsert: true
+        })
+
+      if (uploadError) {
+        console.error(uploadError)
+        return NextResponse.json({ error: "Upload failed" }, { status: 500 })
+      }
+
+      // Get public URL
+      // Get public URL
+      const { data: urlData, error: urlError } = supabase.storage
+        .from("trending-images")
+        .getPublicUrl(filePath)
+
+      console.log("PUBLIC URL RESULT:", urlData, urlError)
+
+      if (urlError) {
+        console.error("URL ERROR:", urlError)
+        return NextResponse.json({ error: "Failed to generate image URL" }, { status: 500 })
+      }
+
+      // Support both formats (just in case)
+      const imageUrl = urlData?.publicUrl || urlData?.publicURL
+
+      if (!imageUrl) {
+        console.error("NO PUBLIC URL GENERATED:", urlData)
+        return NextResponse.json({ error: "Image URL missing" }, { status: 500 })
+      }
+
+      // Save DB Record
+      const { data, error } = await supabase
+        .from("trending_ai_images")
+        .insert([
+          { id, imageUrl, promptText, aiToolName, aiToolUrl, title }
+        ])
+        .select()
+        .single()
+
+      if (error) {
+        console.error(error)
+        return NextResponse.json({ error: "Database insert failed" }, { status: 500 })
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Trending AI image added successfully",
+        data
       })
     }
 
@@ -481,6 +597,10 @@ export async function POST(request) {
         }
       })
     }
+
+
+
+
 
     // ==================== AUTH: ADMIN REGISTER ====================
 

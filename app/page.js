@@ -9,6 +9,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { TrendingAICarousel } from '@/components/TrendingAICarousel'
+
 
 export default function Home() {
   const [prompts, setPrompts] = useState([])
@@ -232,6 +234,9 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+            
+      {/* Trending AI Carousel */}
+      <TrendingAICarousel />
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
