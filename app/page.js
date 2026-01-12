@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
+import Image from "next/image"
 
 
 export default function Home() {
@@ -76,12 +77,17 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
+                {/* <Image
+                  src="/logo.png"
+                  alt="SackNest Logo"
+                  width={64}
+                  height={64}
+                /> */}
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest</span>
             </Link>
-            
+
             <nav className="hidden md:flex items-center space-x-6">
               <Link href="/prompts" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
                 Browse Prompts
@@ -104,7 +110,7 @@ export default function Home() {
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -113,7 +119,7 @@ export default function Home() {
               <Sparkles className="w-4 h-4 mr-2" />
               #1 AI Prompt Library for Creators
             </Badge>
-            
+
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
               Create{' '}
               <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
@@ -121,9 +127,9 @@ export default function Home() {
               </span>
               {' '}with AI Prompts
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              500+ battle-tested AI prompts for Instagram, YouTube, TikTok & more. 
+              500+ battle-tested AI prompts for Instagram, YouTube, TikTok & more.
               Save 10+ hours weekly with prompts used by top creators.
             </p>
 
@@ -142,7 +148,7 @@ export default function Home() {
                 <div className="text-sm text-gray-600 dark:text-gray-400">Content Created</div>
               </div>
             </div> */}
-            
+
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <Link href="/prompts">
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
@@ -160,7 +166,7 @@ export default function Home() {
           </motion.div>
 
           {/* Right Visual */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -234,7 +240,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-            
+
       {/* Trending AI Carousel */}
       <TrendingAICarousel />
 
@@ -248,7 +254,7 @@ export default function Home() {
         >
           <h2 className="text-4xl font-bold text-center mb-4">Why Creators Love SackNest</h2>
           <p className="text-center text-gray-600 dark:text-gray-400 mb-12">Everything you need to create content that converts</p>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -353,58 +359,58 @@ export default function Home() {
 
       {/* Email Capture Section */}
       <section className="container mx-auto px-4 py-24">
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    viewport={{ once: true }}
-    className="max-w-3xl mx-auto"
-  >
-    <Card className="relative overflow-hidden border border-white/20 backdrop-blur-xl bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 shadow-2xl rounded-3xl">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent)]" />
-
-      <CardContent className="p-10 md:p-14 text-center text-white relative z-10">
-        
-        <Mail className="w-16 h-16 mx-auto mb-6 opacity-95 drop-shadow-lg" />
-
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-          Get 10 Free Premium Prompts
-        </h2>
-
-        <p className="text-lg md:text-xl opacity-90 mb-10">
-          Join <span className="font-semibold">10,000+ creators</span> getting weekly AI tips & exclusive prompts
-        </p>
-
-        <form 
-          onSubmit={handleEmailSubmit} 
-          className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto"
         >
-          <Input
-            type="email"
-            placeholder="your@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="bg-white/95 shadow-xl text-gray-900 border-none text-lg h-12 rounded-xl"
-          />
+          <Card className="relative overflow-hidden border border-white/20 backdrop-blur-xl bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 shadow-2xl rounded-3xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent)]" />
 
-          <Button 
-            type="submit"
-            size="lg"
-            disabled={emailSubmitting}
-            className="h-12 rounded-xl text-white text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition"
-          >
-            {emailSubmitting ? 'Sending...' : 'Get Free Pack'}
-          </Button>
-        </form>
+            <CardContent className="p-10 md:p-14 text-center text-white relative z-10">
 
-        <p className="text-sm mt-6 opacity-80">
-          No spam. Unsubscribe anytime. We respect your privacy.
-        </p>
-      </CardContent>
-    </Card>
-  </motion.div>
-</section>
+              <Mail className="w-16 h-16 mx-auto mb-6 opacity-95 drop-shadow-lg" />
+
+              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+                Get 10 Free Premium Prompts
+              </h2>
+
+              <p className="text-lg md:text-xl opacity-90 mb-10">
+                Join <span className="font-semibold">10,000+ creators</span> getting weekly AI tips & exclusive prompts
+              </p>
+
+              <form
+                onSubmit={handleEmailSubmit}
+                className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+              >
+                <Input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-white/95 shadow-xl text-gray-900 border-none text-lg h-12 rounded-xl"
+                />
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={emailSubmitting}
+                  className="h-12 rounded-xl text-white text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition"
+                >
+                  {emailSubmitting ? 'Sending...' : 'Get Free Pack'}
+                </Button>
+              </form>
+
+              <p className="text-sm mt-6 opacity-80">
+                No spam. Unsubscribe anytime. We respect your privacy.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </section>
 
 
       {/* Social Proof Section */}
@@ -476,7 +482,7 @@ export default function Home() {
                 Premium AI prompts for content creators & influencers
               </p>
             </div>
-            
+
             <div>
               <h4 className="font-bold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
@@ -485,7 +491,7 @@ export default function Home() {
                 <li><Link href="/blog" className="hover:text-purple-600">Blog</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
@@ -494,7 +500,7 @@ export default function Home() {
                 <li><Link href="/refund" className="hover:text-purple-600">Refund Policy</Link></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-bold mb-4">Connect</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
@@ -504,7 +510,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-purple-200 dark:border-purple-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">
             <p>© 2025 SackNest. All rights reserved</p>
           </div>
