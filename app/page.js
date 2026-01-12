@@ -123,7 +123,7 @@ export default function Home() {
             </h1>
 
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              500+ battle-tested AI prompts for Instagram, YouTube, TikTok & more.
+              300+ battle-tested AI prompts for Instagram, YouTube, TikTok & more.
               Save 10+ hours weekly with prompts used by top creators.
             </p>
 
@@ -406,9 +406,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-
       {/* Social Proof Section */}
-      <section className="container mx-auto px-4 py-20">
+      {/* <section className="container mx-auto px-4 py-20">
         <div className="text-center">
           <h2 className="text-4xl font-bold mb-12">Trusted by Top Creators</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -433,7 +432,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
@@ -500,8 +499,8 @@ export default function Home() {
               <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <li><a href="/aboutus" className="hover:text-purple-600">About</a></li>
-                {/* <li><a href="#" className="hover:text-purple-600">Instagram</a></li>
-                <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li> */}
+                <li><a href="https://www.instagram.com/sack.nest/?igsh=MW1qdnVoNXM2eGRybA%3D%3D#" className="hover:text-purple-600">Instagram</a></li>
+                {/*   <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li> */}
               </ul>
             </div>
           </div>
