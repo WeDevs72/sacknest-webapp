@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
-import Image from "next/image"
 
 
 export default function Home() {
@@ -77,13 +76,8 @@ export default function Home() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-                {/* <Image
-                  src="/logo.png"
-                  alt="SackNest Logo"
-                  width={64}
-                  height={64}
-                /> */}
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest</span>
             </Link>
@@ -495,6 +489,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link href="/faqs" className="hover:text-purple-600">FAQ's</Link></li>
                 <li><Link href="/privacy" className="hover:text-purple-600">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="hover:text-purple-600">Terms & Conditions</Link></li>
                 <li><Link href="/refund" className="hover:text-purple-600">Refund Policy</Link></li>
@@ -502,11 +497,11 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Connect</h4>
+              <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><a href="#" className="hover:text-purple-600">Twitter</a></li>
-                <li><a href="#" className="hover:text-purple-600">Instagram</a></li>
-                <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li>
+                <li><a href="/about" className="hover:text-purple-600">About</a></li>
+                {/* <li><a href="#" className="hover:text-purple-600">Instagram</a></li>
+                <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li> */}
               </ul>
             </div>
           </div>
