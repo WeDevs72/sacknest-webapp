@@ -499,7 +499,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><a href="/about" className="hover:text-purple-600">About</a></li>
+                <li><a href="/aboutus" className="hover:text-purple-600">About</a></li>
                 {/* <li><a href="#" className="hover:text-purple-600">Instagram</a></li>
                 <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li> */}
               </ul>
