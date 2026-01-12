@@ -490,6 +490,7 @@ export async function POST(request) {
       const aiToolName = formData.get("aiToolName")
       const aiToolUrl = formData.get("aiToolUrl")
       const title = formData.get("title")
+      const note = formData.get("note")
 
       if (!image) {
         return NextResponse.json({ error: "Image is required" }, { status: 400 })
@@ -520,7 +521,6 @@ export async function POST(request) {
       }
 
       // Get public URL
-      // Get public URL
       const { data: urlData, error: urlError } = supabase.storage
         .from("trending-images")
         .getPublicUrl(filePath)
@@ -544,7 +544,7 @@ export async function POST(request) {
       const { data, error } = await supabase
         .from("trending_ai_images")
         .insert([
-          { id, imageUrl, promptText, aiToolName, aiToolUrl, title }
+          { id, imageUrl, promptText, aiToolName, aiToolUrl, title, note }
         ])
         .select()
         .single()

@@ -24,6 +24,7 @@ export default function AdminTrendingImagesPage() {
   const [formData, setFormData] = useState({
     title: "",
     promptText: "",
+    note: "",
     aiToolName: "",
     aiToolUrl: "",
     image: null
@@ -58,6 +59,7 @@ export default function AdminTrendingImagesPage() {
     setFormData({
       title: "",
       promptText: "",
+      note: "",
       aiToolName: "",
       aiToolUrl: "",
       image: null
@@ -70,6 +72,7 @@ export default function AdminTrendingImagesPage() {
     setFormData({
       title: img.title || "",
       promptText: img.promptText || "",
+      note: img.note || "",
       aiToolName: img.aiToolName || "",
       aiToolUrl: img.aiToolUrl || "",
       image: null
@@ -110,6 +113,7 @@ export default function AdminTrendingImagesPage() {
       const data = new FormData()
       data.append("title", formData.title)
       data.append("promptText", formData.promptText)
+      data.append("note", formData.note)
       data.append("aiToolName", formData.aiToolName)
       data.append("aiToolUrl", formData.aiToolUrl)
 
@@ -248,6 +252,19 @@ export default function AdminTrendingImagesPage() {
                 value={formData.promptText}
                 onChange={(e) =>
                   setFormData({ ...formData, promptText: e.target.value })
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <label>Note *</label>
+              <textarea
+                className="w-full p-2 border rounded"
+                rows={4}
+                value={formData.note}
+                onChange={(e) =>
+                  setFormData({ ...formData, note: e.target.value })
                 }
                 required
               />

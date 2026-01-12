@@ -42,8 +42,8 @@ export function PromptModal({ image, isOpen, onClose }) {
         <div className="space-y-6">
           {/* Image Preview */}
           <div className="relative rounded-lg overflow-hidden">
-            <img 
-              src={image.imageUrl} 
+            <img
+              src={image.imageUrl}
               alt={image.title || 'AI Generated'}
               className="w-full h-auto max-h-96 object-contain bg-gray-100 dark:bg-gray-800"
             />
@@ -56,9 +56,9 @@ export function PromptModal({ image, isOpen, onClose }) {
               <p className="font-bold text-lg text-purple-600 dark:text-purple-400">{image.aiToolName}</p>
             </div>
             {image.aiToolUrl && (
-              <a 
-                href={image.aiToolUrl} 
-                target="_blank" 
+              <a
+                href={image.aiToolUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1"
               >
@@ -78,8 +78,17 @@ export function PromptModal({ image, isOpen, onClose }) {
             </div>
           </div>
 
+          <div>
+            <label className="block text-sm font-semibold mb-2">Note:</label>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+              <p className="text-sm leading-relaxed whitespace-pre-wrap font-mono">
+                {image.note}
+              </p>
+            </div>
+          </div>
+
           {/* Copy Button */}
-          <Button 
+          <Button
             onClick={handleCopy}
             className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
             size="lg"
