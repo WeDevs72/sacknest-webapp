@@ -2,13 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star } from 'lucide-react'
+import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star, Filter } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
 import logo from '@/public/logo.png'
@@ -19,7 +15,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
   const [emailSubmitting, setEmailSubmitting] = useState(false)
-  const { toast } = useToast()
+  const { toast } = useToast();
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [index, setIndex] = useState(0);
 
 
@@ -32,27 +30,42 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    fetchPrompts()
+    fetchPrompts();
+    fetchCategories();
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % roles.length);
     }, 3000);
-
     return () => clearInterval(interval);
-  }, [])
+  }, [selectedCategory]);
 
   const fetchPrompts = async () => {
     try {
-      const response = await fetch('/api/prompts?limit=6')
-      const data = await response.json()
+      const url = selectedCategory === 'all'
+        ? '/api/prompts?limit=6'
+        : `/api/prompts?limit=6&category=${encodeURIComponent(selectedCategory)}`;
+      const response = await fetch(url);
+      const data = await response.json();
       if (Array.isArray(data)) {
-        setPrompts(data)
+        setPrompts(data);
       }
     } catch (error) {
-      console.error('Error fetching prompts:', error)
+      console.error('Error fetching prompts:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setCategories(['all', ...data]);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const handleEmailSubmit = async (e) => {
     e.preventDefault()
@@ -116,6 +129,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
+
       <section className="container mx-auto px-4 pt-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
