@@ -1,12 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Eye, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { Eye, ArrowRight } from 'lucide-react'
 import { PromptModal } from './PromptModal'
 
 export function TrendingAICarousel() {
@@ -14,7 +12,7 @@ export function TrendingAICarousel() {
   const [loading, setLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const scrollContainerRef = useRef(null)
+  const [isPaused, setIsPaused] = useState(false)
 
   useEffect(() => {
     fetchImages()
@@ -37,35 +35,24 @@ export function TrendingAICarousel() {
   const handleViewPrompt = (image) => {
     setSelectedImage(image)
     setShowModal(true)
+    setIsPaused(true)
   }
 
-  const scroll = (direction) => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 400
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
+  const handleModalClose = () => {
+    setShowModal(false)
+    setIsPaused(false)
   }
 
-  if (loading) {
-    return (
-      <div className="py-12">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
-        </div>
-      </div>
-    )
-  }
-
-  if (images.length === 0) {
-    return null
-  }
+  if (loading || images.length === 0) return null
 
   return (
-    <section className="py-20 relative">
+    <section
+      className="py-20 relative bg-yellow-50 dark:bg-black/50 border-y-2 border-black overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="container mx-auto px-4">
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -73,109 +60,99 @@ export function TrendingAICarousel() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-            🎨 Trending AI Creations
-          </Badge>
-          <h2 className="text-4xl font-bold mb-4">Get Inspired by Viral AI Art</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400">Copy prompts from trending AI-generated images</p>
+          <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
+            Viral AI{' '}
+            <span className="underline decoration-yellow-400 decoration-8 underline-offset-4">
+              Art
+            </span>
+          </h2>
+          <p className="text-xl text-gray-700 dark:text-gray-300 font-bold max-w-2xl mx-auto">
+            Copy prompts from trending AI-generated images used by top creators.
+          </p>
         </motion.div>
 
-        {/* Carousel */}
-        <div className="relative">
-          {/* Scroll Buttons */}
-          <button
-            onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition hidden md:block"
+        {/* MARQUEE */}
+        <div className="overflow-hidden">
+          <div
+            className="flex whitespace-nowrap w-max animate-marquee"
+            style={{
+              animationPlayState: isPaused ? 'paused' : 'running'
+            }}
           >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-3 shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition hidden md:block"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-
-          {/* Scrollable Container */}
-          <div 
-            ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {images.map((image, index) => (
+            {[...images, ...images].map((image, idx) => (
               <motion.div
-                key={image.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex-shrink-0 w-80 snap-center"
+                key={`${image.id}-${idx}`}
+                className="inline-block w-80 mr-8"
               >
-                <Card className="overflow-hidden border-2 border-purple-100 dark:border-purple-900 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:shadow-2xl group">
-                  <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
-                      src={image.imageUrl} 
+                <div className="h-full bg-white dark:bg-gray-900 rounded-[2rem] overflow-hidden border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="relative aspect-square overflow-hidden bg-gray-100 border-b-2 border-black">
+                    <img
+                      src={image.imageUrl}
                       alt={image.title || 'AI Generated'}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      draggable={false}
                     />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Button
                         onClick={() => handleViewPrompt(image)}
-                        className="w-full bg-white text-purple-600 hover:bg-gray-100"
+                        className="bg-yellow-400 text-black border-2 border-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
                       >
                         <Eye className="w-4 h-4 mr-2" />
-                        View / Copy Prompt
+                        View
                       </Button>
                     </div>
                   </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-bold text-lg mb-2 line-clamp-1">{image.title || 'Untitled'}</h3>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-                        {image.aiToolName}
-                      </Badge>
-                      <Button
-                        onClick={() => handleViewPrompt(image)}
-                        size="sm"
-                        variant="ghost"
-                        className="text-purple-600 hover:text-purple-700"
-                      >
-                        View Prompt
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+
+                  <div className="p-5">
+                    <h3 className="font-black text-lg uppercase truncate">
+                      {image.title || 'Untitled'}
+                    </h3>
+                    <span className="inline-block mt-2 bg-green-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase">
+                      {image.aiToolName}
+                    </span>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
 
-        {/* View More Button */}
-        <div className="text-center mt-12">
+        {/* View More */}
+        <div className="text-center mt-10">
           <Link href="/trending-ai-images">
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20"
+            <Button
+              size="lg"
+              className="bg-black text-white border-2 border-black px-8 py-6 text-lg font-black uppercase shadow-[4px_4px_0px_0px_#facc15]"
             >
-              View All AI Creations
+              View Gallery
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Prompt Modal */}
-      <PromptModal 
+      {/* Modal */}
+      <PromptModal
         image={selectedImage}
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleModalClose}
       />
 
+      {/* SAME MARQUEE CSS */}
       <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+
+        .animate-marquee {
+          animation: marquee 80s linear infinite;
+          will-change: transform;
         }
       `}</style>
     </section>

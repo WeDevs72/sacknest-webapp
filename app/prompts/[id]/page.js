@@ -45,6 +45,7 @@ export default function PromptDetailPage() {
       toast({
         title: "Copied! 📋",
         description: "Prompt copied to clipboard",
+        className: "border-2 border-black"
       })
       setTimeout(() => setCopied(false), 2000)
     }
@@ -52,19 +53,19 @@ export default function PromptDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-black dark:border-white"></div>
       </div>
     )
   }
 
   if (!prompt) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Prompt Not Found</h1>
+          <h1 className="text-5xl font-black mb-6 uppercase">Prompt Not Found</h1>
           <Link href="/prompts">
-            <Button>Back to Prompts</Button>
+            <Button className="border-2 border-black">Back to Prompts</Button>
           </Link>
         </div>
       </div>
@@ -72,16 +73,16 @@ export default function PromptDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 border-b border-purple-200 dark:border-purple-800">
+      <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
+                <Sparkles className="w-6 h-6 text-white dark:text-black" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest</span>
+              <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
             </Link>
           </div>
         </div>
@@ -89,8 +90,8 @@ export default function PromptDetailPage() {
 
       <div className="container mx-auto px-4 py-12">
         <Link href="/prompts">
-          <Button variant="ghost" className="mb-8">
-            <ArrowLeft className="w-4 h-4 mr-2" />
+          <Button variant="ghost" className="mb-8 hover:bg-transparent hover:text-yellow-600 pl-0 text-lg">
+            <ArrowLeft className="w-5 h-5 mr-2" />
             Back to Prompts
           </Button>
         </Link>
@@ -102,25 +103,25 @@ export default function PromptDetailPage() {
         >
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white border-2 border-black px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                 {prompt.category}
-              </Badge>
+              </span>
               {prompt.isPremium && (
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
-                  <Star className="w-3 h-3 mr-1" />
+                <span className="bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                  <Star className="w-3 h-3 mr-1 fill-black" />
                   Premium
-                </Badge>
+                </span>
               )}
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-black mb-6 uppercase tracking-tighter text-black dark:text-white leading-[1.1]">
               {prompt.title}
             </h1>
             {prompt.tags && prompt.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {prompt.tags.map((tag, i) => (
-                  <span key={i} className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-                    {tag}
+                  <span key={i} className="text-sm font-bold bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 px-3 py-1 rounded-lg uppercase tracking-wide">
+                    #{tag}
                   </span>
                 ))}
               </div>
@@ -128,37 +129,35 @@ export default function PromptDetailPage() {
           </div>
 
           {/* Prompt Card */}
-          <Card className="mb-8 border-purple-200 dark:border-purple-800">
-            <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20">
-              <CardTitle className="flex items-center justify-between">
-                <span>Prompt</span>
-                <Button
-                  onClick={copyToClipboard}
-                  size="sm"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
-                >
-                  {copied ? (
-                    <><Check className="w-4 h-4 mr-2" /> Copied!</>
-                  ) : (
-                    <><Copy className="w-4 h-4 mr-2" /> Copy Prompt</>
-                  )}
-                </Button>
-              </CardTitle>
+          <Card className="mb-10 border-4 border-black dark:border-white rounded-[2rem] overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]">
+            <CardHeader className="bg-gray-100 dark:bg-gray-900 border-b-4 border-black flex flex-row items-center justify-between p-6">
+              <CardTitle className="text-xl font-black uppercase tracking-wide">Prompt</CardTitle>
+              <Button
+                onClick={copyToClipboard}
+                size="sm"
+                className="bg-black text-white hover:bg-gray-800 border-2 border-black font-bold uppercase tracking-wide"
+              >
+                {copied ? (
+                  <><Check className="w-4 h-4 mr-2" /> Copied!</>
+                ) : (
+                  <><Copy className="w-4 h-4 mr-2" /> Copy Prompt</>
+                )}
+              </Button>
             </CardHeader>
-            <CardContent className="p-6">
-              <p className="text-lg leading-relaxed whitespace-pre-wrap font-mono bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+            <CardContent className="p-8">
+              <div className="text-lg leading-relaxed whitespace-pre-wrap font-mono bg-white dark:bg-black p-6 rounded-xl border-2 border-black border-dashed">
                 {prompt.promptText}
-              </p>
+              </div>
             </CardContent>
           </Card>
 
           {/* Example Output */}
           {prompt.exampleOutput && (
-            <Card className="mb-8 border-purple-200 dark:border-purple-800">
-              <CardHeader>
-                <CardTitle>Example Output</CardTitle>
+            <Card className="mb-10 border-2 border-black dark:border-white rounded-[2rem] overflow-hidden">
+              <CardHeader className="bg-blue-50 dark:bg-gray-900 border-b-2 border-black p-6">
+                <CardTitle className="text-xl font-black uppercase tracking-wide">Example Output</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-8">
                 <div className="prose dark:prose-invert max-w-none">
                   <ReactMarkdown>{prompt.exampleOutput}</ReactMarkdown>
                 </div>
@@ -168,38 +167,38 @@ export default function PromptDetailPage() {
 
           {/* Example Image */}
           {prompt.exampleImageUrl && (
-            <Card className="mb-8 border-purple-200 dark:border-purple-800">
-              <CardHeader>
-                <CardTitle>Example Visual</CardTitle>
+            <Card className="mb-10 border-2 border-black dark:border-white rounded-[2rem] overflow-hidden">
+              <CardHeader className="bg-pink-50 dark:bg-gray-900 border-b-2 border-black p-6">
+                <CardTitle className="text-xl font-black uppercase tracking-wide">Example Visual</CardTitle>
               </CardHeader>
-              <CardContent>
-                <img 
-                  src={prompt.exampleImageUrl} 
-                  alt="Example" 
-                  className="w-full rounded-lg"
+              <CardContent className="p-0">
+                <img
+                  src={prompt.exampleImageUrl}
+                  alt="Example"
+                  className="w-full h-auto"
                 />
               </CardContent>
             </Card>
           )}
 
           {/* Why This Works Section */}
-          <Card className="mb-8 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-800">
-            <CardHeader>
-              <CardTitle>💡 Why This Prompt Works</CardTitle>
+          <Card className="mb-12 bg-green-50 dark:bg-gray-900 border-2 border-black dark:border-white rounded-[2rem] overflow-hidden">
+            <CardHeader className="border-b-2 border-black p-6">
+              <CardTitle className="text-xl font-black uppercase tracking-wide">💡 Why This Prompt Works</CardTitle>
             </CardHeader>
-            <CardContent>
-              <ul className="space-y-3">
+            <CardContent className="p-8">
+              <ul className="space-y-4">
                 <li className="flex items-start">
-                  <span className="text-purple-600 mr-2">✓</span>
-                  <span><strong>Specific and Clear:</strong> The prompt provides clear instructions that AI can follow easily</span>
+                  <span className="bg-green-400 text-black border border-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 font-bold">✓</span>
+                  <span className="font-medium text-lg"><strong>Specific and Clear:</strong> The prompt provides clear instructions that AI can follow easily</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-purple-600 mr-2">✓</span>
-                  <span><strong>Structured Output:</strong> It guides the AI to produce organized, actionable results</span>
+                  <span className="bg-green-400 text-black border border-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 font-bold">✓</span>
+                  <span className="font-medium text-lg"><strong>Structured Output:</strong> It guides the AI to produce organized, actionable results</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-purple-600 mr-2">✓</span>
-                  <span><strong>Battle-Tested:</strong> Used by successful creators with proven engagement results</span>
+                  <span className="bg-green-400 text-black border border-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 font-bold">✓</span>
+                  <span className="font-medium text-lg"><strong>Battle-Tested:</strong> Used by successful creators with proven engagement results</span>
                 </li>
               </ul>
             </CardContent>
@@ -207,18 +206,16 @@ export default function PromptDetailPage() {
 
           {/* CTA */}
           {prompt.isPremium && (
-            <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-none">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-3">Want More Premium Prompts Like This?</h3>
-                <p className="mb-6 opacity-90">Get access to 500+ exclusive prompts in our premium packs</p>
-                <Link href="/premium">
-                  <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
-                    View Premium Packs
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <div className="bg-black text-white rounded-[2.5rem] p-12 text-center border-4 border-yellow-400 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]">
+              <h3 className="text-3xl font-black mb-4 uppercase tracking-tight">Want More Premium Prompts?</h3>
+              <p className="mb-8 opacity-90 text-lg font-bold">Get access to 500+ exclusive prompts in our premium packs</p>
+              <Link href="/premium">
+                <Button size="lg" className="bg-yellow-400 text-black hover:bg-white border-2 border-white hover:border-black text-xl py-6 px-10 rounded-xl font-black uppercase tracking-wide transition-all">
+                  View Premium Packs
+                  <ArrowRight className="ml-2 w-6 h-6" />
+                </Button>
+              </Link>
+            </div>
           )}
         </motion.div>
       </div>

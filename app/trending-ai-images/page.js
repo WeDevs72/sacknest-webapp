@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Sparkles, Search, Eye, ArrowLeft } from 'lucide-react'
 import { PromptModal } from '@/components/PromptModal'
 
@@ -23,16 +21,19 @@ export default function TrendingAIImagesPage() {
   }, [])
 
   useEffect(() => {
-    if (searchQuery) {
-      const filtered = images.filter(img => 
-        img.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        img.aiToolName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        img.promptText?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      setFilteredImages(filtered)
-    } else {
+    if (!searchQuery) {
       setFilteredImages(images)
+      return
     }
+
+    const query = searchQuery.toLowerCase()
+    setFilteredImages(
+      images.filter(img =>
+        img?.title?.toLowerCase().includes(query) ||
+        img?.aiToolName?.toLowerCase().includes(query) ||
+        img?.promptText?.toLowerCase().includes(query)
+      )
+    )
   }, [searchQuery, images])
 
   const fetchImages = async () => {
@@ -43,8 +44,8 @@ export default function TrendingAIImagesPage() {
         setImages(data)
         setFilteredImages(data)
       }
-    } catch (error) {
-      console.error('Error fetching images:', error)
+    } catch (err) {
+      console.error('Error fetching images:', err)
     } finally {
       setLoading(false)
     }
@@ -55,37 +56,36 @@ export default function TrendingAIImagesPage() {
     setShowModal(true)
   }
 
+  const handleModalClose = () => {
+    setShowModal(false)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
+
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 border-b border-purple-200 dark:border-purple-800">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest</span>
-            </Link>
-            
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/prompts" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                Browse Prompts
-              </Link>
-              <Link href="/premium" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                Premium Packs
-              </Link>
-              <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                Blog
-              </Link>
-            </nav>
-          </div>
+      <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-white dark:text-black" />
+            </div>
+            <span className="text-2xl font-black tracking-tighter">
+              SackNest
+            </span>
+          </Link>
+
+          <nav className="hidden md:flex space-x-8 font-bold">
+            <Link href="/prompts">Browse Prompts</Link>
+            <Link href="/premium">Premium Packs</Link>
+            <Link href="/blog">Blog</Link>
+          </nav>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-12">
         <Link href="/">
-          <Button variant="ghost" className="mb-8">
+          <Button variant="ghost" className="mb-8 pl-0">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Button>
@@ -95,103 +95,87 @@ export default function TrendingAIImagesPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <Badge className="mb-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2">
-            🎨 Trending AI Creations
-          </Badge>
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            AI Image Prompts Gallery
+          <h1 className="text-5xl md:text-7xl font-black mb-6 uppercase tracking-tighter">
+            AI Image{' '}
+            <span className="bg-yellow-400 px-2 border-2 border-black inline-block -skew-x-3">
+              Gallery
+            </span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Explore viral AI-generated images and copy their prompts
+          <p className="text-xl text-gray-600 dark:text-gray-300 font-bold">
+            Explore viral AI-generated images and copy their prompts instantly.
           </p>
         </motion.div>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              type="text"
-              placeholder="Search by title, AI tool, or prompt..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-6 text-lg border-purple-200 focus:border-purple-400"
-            />
-          </div>
+        {/* Search */}
+        <div className="max-w-3xl mx-auto mb-16 relative">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by title, AI tool, or prompt..."
+            className="pl-16 py-8 text-xl border-4 border-black rounded-2xl font-bold"
+          />
         </div>
 
-        {/* Images Grid */}
+        {/* GRID GALLERY */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
+          <div className="flex justify-center py-20">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-black border-t-transparent" />
           </div>
         ) : filteredImages.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-500 dark:text-gray-400">No images found. Try a different search.</p>
-          </div>
+          <p className="text-center font-bold text-xl py-20">
+            No images found.
+          </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredImages.map((image, index) => (
               <motion.div
-                key={image.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                key={image.id || index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <Card className="overflow-hidden border-2 border-purple-100 dark:border-purple-900 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:shadow-2xl group h-full">
-                  <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <img 
-                      src={image.imageUrl} 
+                <div className="rounded-[2rem] overflow-hidden border-2 border-black shadow-[8px_8px_0_0_#000] group hover:-translate-y-1 transition-all duration-300">
+                  <div className="relative aspect-square bg-gray-100">
+                    <img
+                      src={image.imageUrl}
                       alt={image.title || 'AI Generated'}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                       <Button
                         onClick={() => handleViewPrompt(image)}
-                        className="w-full bg-white text-purple-600 hover:bg-gray-100"
-                        size="sm"
+                        className="bg-yellow-400 text-black border-2 border-black font-black"
                       >
                         <Eye className="w-4 h-4 mr-2" />
-                        View / Copy Prompt
-                      </Button>
-                    </div>
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-bold text-lg mb-2 line-clamp-1">{image.title || 'Untitled'}</h3>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 text-xs">
-                        {image.aiToolName}
-                      </Badge>
-                      <Button
-                        onClick={() => handleViewPrompt(image)}
-                        size="sm"
-                        variant="ghost"
-                        className="text-purple-600 hover:text-purple-700 text-xs"
-                      >
                         View Prompt
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="font-black uppercase truncate">
+                      {image.title || 'Untitled'}
+                    </h3>
+                    <span className="inline-block mt-2 text-xs bg-green-400 px-3 py-1 border-2 border-black rounded-full font-black">
+                      {image.aiToolName}
+                    </span>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         )}
-
-        {/* Results Count */}
-        <div className="text-center mt-12 text-gray-600 dark:text-gray-400">
-          Showing {filteredImages.length} of {images.length} AI creations
-        </div>
       </div>
 
-      {/* Prompt Modal */}
-      <PromptModal 
+      {/* Modal */}
+      <PromptModal
         image={selectedImage}
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={handleModalClose}
       />
     </div>
   )

@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const faqs = [
   {
@@ -34,46 +36,49 @@ export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <section className="min-h-screen bg-[#eceffb] py-14 px-4 md:px-0">
+    <section className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black py-14 px-4 md:px-0">
       <div className="max-w-4xl mx-auto">
 
-        <Link href="/" className="text-sm text-gray-700 hover:text-black mb-6 block">
-          ← Back to Home
+        <Link href="/">
+          <Button variant="ghost" className="mb-8 hover:bg-transparent hover:text-yellow-600 pl-0 text-lg">
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Back to Home
+          </Button>
         </Link>
 
-        <span className="inline-block mb-4 text-sm font-medium text-purple-700 bg-purple-100 px-4 py-1 rounded-full">
+        <span className="inline-block mb-4 text-sm font-black uppercase tracking-widest text-black bg-yellow-400 border-2 border-black px-4 py-1 rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           FAQs
         </span>
 
-        <h1 className="text-4xl font-bold text-[#6b42ff] mb-2">
-          Frequently Asked Questions
+        <h1 className="text-5xl font-black text-black dark:text-white mb-4 uppercase tracking-tighter">
+          Frequently Asked <span className="underline decoration-yellow-400 decoration-8 underline-offset-4">Questions</span>
         </h1>
 
-        <p className="text-gray-600 mb-10">
+        <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 font-bold">
           Find answers to the most common questions about SackNest.
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div
                 key={index}
-                className="bg-white rounded-xl shadow-sm border border-gray-200"
+                className={`bg-white dark:bg-gray-900 rounded-2xl border-2 border-black transition-all duration-300 ${isOpen ? 'shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] -translate-y-1' : 'shadow-none'}`}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full flex justify-between items-center px-5 py-4 text-left"
+                  className="w-full flex justify-between items-center px-8 py-6 text-left"
                 >
-                  <span className="text-lg font-semibold text-gray-900">
+                  <span className="text-xl font-black text-black dark:text-white uppercase tracking-tight">
                     {faq.q}
                   </span>
 
                   <motion.span
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="text-gray-600 text-2xl"
+                    className="text-black dark:text-white text-2xl font-black bg-yellow-400 w-8 h-8 flex items-center justify-center rounded-lg border-2 border-black"
                   >
                     ▼
                   </motion.span>
@@ -91,7 +96,7 @@ export default function FAQPage() {
                       }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-4 text-gray-700 leading-relaxed">
+                      <div className="px-8 pb-8 text-lg text-gray-700 dark:text-gray-300 font-medium leading-relaxed border-t-2 border-black border-dashed pt-4 mx-4">
                         {faq.a}
                       </div>
                     </motion.div>
@@ -102,10 +107,11 @@ export default function FAQPage() {
           })}
         </div>
 
-        <div className="mt-12 text-center text-gray-700">
-          Still have questions?
-          <span className="font-semibold"> Contact us at: </span>
-          your@email.com
+        <div className="mt-16 text-center bg-black text-white p-8 rounded-[2rem] border-4 border-yellow-400">
+          <p className="text-xl font-bold mb-4">Still have questions?</p>
+          <a href="mailto:sacknest.info@gmail.com" className="inline-block bg-yellow-400 text-black px-8 py-4 rounded-full font-black uppercase tracking-widest border-2 border-white hover:bg-white hover:text-black hover:border-black transition-all shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
+            Contact Support
+          </a>
         </div>
       </div>
     </section>

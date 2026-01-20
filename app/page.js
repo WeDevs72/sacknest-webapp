@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
+import logo from '@/public/logo.png'
 
 
 export default function Home() {
@@ -18,9 +20,24 @@ export default function Home() {
   const [email, setEmail] = useState('')
   const [emailSubmitting, setEmailSubmitting] = useState(false)
   const { toast } = useToast()
+  const [index, setIndex] = useState(0);
+
+
+  const roles = [
+    "INFLUENCER",
+    "CREATOR",
+    "FREELANCER",
+    "MARKETER",
+    "DESIGNER",
+  ];
 
   useEffect(() => {
     fetchPrompts()
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % roles.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, [])
 
   const fetchPrompts = async () => {
@@ -70,201 +87,125 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 border-b border-purple-200 dark:border-purple-800">
+      <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
+                {/* <Image src={logo} alt="SackNest Logo" className="w-6 h-6 object-contain invert dark:invert-0" /> */}
+                <Sparkles className="w-6 h-6 text-white dark:text-black" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest</span>
+              <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
             </Link>
 
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/prompts" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+            <nav className="hidden md:flex items-center space-x-8 font-bold">
+              <Link href="/prompts" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-yellow-400 underline-offset-4 transition-all">
                 Browse Prompts
               </Link>
-              <Link href="/premium" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+              <Link href="/premium" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-green-400 underline-offset-4 transition-all">
                 Premium Packs
               </Link>
-              <Link href="/blog" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+              <Link href="/blog" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-blue-400 underline-offset-4 transition-all">
                 Blog
               </Link>
-              {/* <Link href="/admin/login">
-                <Button variant="outline" size="sm">Admin</Button>
-              </Link> */}
             </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-12 md:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge className="mb-6 bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300 px-4 py-2">
-              <Sparkles className="w-4 h-4 mr-2" />
-              #1 AI Prompt Library for Creators
-            </Badge>
+      <section className="container mx-auto px-4 pt-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-5xl mx-auto"
+        >
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              Create{' '}
-              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
-                Viral Content
-              </span>
-              {' '}with AI Prompts
-            </h1>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-[0.85] tracking-tighter text-black dark:text-white uppercase">
+            Ready To Paste
+          </h1>
 
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              300+ battle-tested AI prompts for Instagram, YouTube, TikTok & more.
-              Save 10+ hours weekly with prompts used by top creators.
-            </p>
+          <div className="mt-4 flex justify-center">
+            <div className="relative inline-flex items-center px-8 py-4 bg-black dark:bg-white transform -skew-x-6">
+              {/* Unskew content */}
+              <div className="flex items-center gap-3 transform skew-x-6 text-white dark:text-black font-black uppercase text-3xl md:text-5xl lg:text-6xl leading-none">
+                AI PROMPT FOR
 
-            {/* Stats */}
-            {/* <div className="flex flex-wrap gap-8 mb-8">
-              <div>
-                <div className="text-3xl font-bold text-purple-600">10K+</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Active Creators</div>
+                {/* Fixed-width rotating word */}
+                <span className="relative inline-block w-[10ch] h-[1em] overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={roles[index]}
+                      initial={{ y: "100%", opacity: 0 }}
+                      animate={{ y: "0%", opacity: 1 }}
+                      exit={{ y: "-100%", opacity: 0 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                      className="absolute left-0 top-0"
+                    >
+                      {roles[index]}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
               </div>
-              <div>
-                <div className="text-3xl font-bold text-purple-600">500+</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">AI Prompts</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-purple-600">50K+</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Content Created</div>
-              </div>
-            </div> */}
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Link href="/prompts">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all">
-                  Get Started Free
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-              <Link href="/premium">
-                <Button size="lg" variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 px-8 py-6 text-lg">
-                  View Premium Packs
-                </Button>
-              </Link>
             </div>
+          </div>
 
-          </motion.div>
+          <p className="mt-4 text-xl md:text-3xl text-gray-800 dark:text-gray-300 mb-12 max-w-3xl mx-auto font-medium leading-normal">
+            Unleash your creative potential with the world's largest AI prompt library.
+            Trusted by creators who mean business.
+          </p>
 
-          {/* Right Visual */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
-          >
-            {/* Main Image Container */}
-            <div className="relative z-10">
-              <div className="bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-3xl p-8 shadow-2xl">
-                {/* Placeholder for hero image */}
-                <div className="aspect-square bg-gradient-to-br from-purple-200 to-indigo-200 dark:from-purple-800 dark:to-indigo-800 rounded-2xl flex items-center justify-center">
-                  <div className="text-center">
-                    <Sparkles className="w-12 h-12 mx-auto mb-4 text-purple-600" />
-                    <p className="text-2xl font-bold text-purple-600">AI Prompt Magic</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Hero Image Placeholder</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Card 1 - Top Right */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-xl border border-purple-100 dark:border-purple-900"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">+24%</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Engagement</div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Floating Card 2 - Bottom Left */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-xl border border-purple-100 dark:border-purple-900"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">1K+</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400">Creators</div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Floating Card 3 - Middle Right */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9, duration: 0.5 }}
-                className="absolute top-1/2 -right-8 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-2xl p-3 shadow-xl border border-purple-100 dark:border-purple-900"
-              >
-                <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-yellow-500" />
-                  <span className="text-sm font-semibold">Save 10hrs/week</span>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Background Gradient Blur */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 blur-3xl -z-10"></div>
-          </motion.div>
-        </div>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-24">
+            <Link href="/prompts">
+              <Button size="lg" className="bg-yellow-400 hover:bg-yellow-300 text-black border-2 border-black rounded-full px-12 py-8 text-xl font-black uppercase tracking-wide shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                Browse Prompts <ArrowRight className="ml-3 w-6 h-6" />
+              </Button>
+            </Link>
+            <Link href="/premium">
+              <Button size="lg" variant="outline" className="bg-white dark:bg-black text-black dark:text-white border-2 border-black dark:border-white rounded-full px-12 py-8 text-xl font-black uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-gray-900">
+                Premium Packs
+              </Button>
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
       {/* Trending AI Carousel */}
       <TrendingAICarousel />
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-24">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl font-bold text-center mb-4">Why Creators Love SackNest</h2>
-          <p className="text-center text-gray-600 dark:text-gray-400 mb-12">Everything you need to create content that converts</p>
+          <h2 className="text-5xl md:text-6xl font-black text-center mb-6 uppercase tracking-tight text-black dark:text-white">Why <span className="text-green-500 underline decoration-4 decoration-black dark:decoration-white">SackNest</span>?</h2>
+          <p className="text-center text-2xl text-gray-700 dark:text-gray-300 mb-20 max-w-3xl mx-auto font-bold">Everything you need to create content that converts, faster than ever.</p>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: Zap,
-                title: "Save 10+ Hours Weekly",
-                description: "Stop staring at blank screens. Get instant prompts for any content type."
+                title: "Save 10+ Hours",
+                description: "Stop staring at blank screens. Get instant prompts for any content type.",
+                color: "bg-yellow-400",
               },
               {
                 icon: TrendingUp,
                 title: "Proven to Convert",
-                description: "Prompts tested by successful creators with millions of followers."
+                description: "Prompts tested by successful creators with millions of followers.",
+                color: "bg-green-400",
               },
               {
                 icon: Users,
-                title: "All Niches Covered",
-                description: "Instagram, YouTube, TikTok, LinkedIn - we've got prompts for every platform."
+                title: "All Niches",
+                description: "Instagram, YouTube, TikTok, LinkedIn - we've got prompts for every platform.",
+                color: "bg-blue-400",
               }
             ].map((feature, index) => (
               <motion.div
@@ -274,15 +215,13 @@ export default function Home() {
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Card className="border-purple-200 dark:border-purple-800 hover:shadow-xl transition-shadow duration-300">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center mb-4">
-                      <feature.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="h-full bg-white dark:bg-gray-900 rounded-[2rem] p-8 border-2 border-black dark:border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all duration-200">
+                  <div className={`w-16 h-16 ${feature.color} rounded-xl flex items-center justify-center mb-6 border-2 border-black`}>
+                    <feature.icon className="w-8 h-8 text-black" />
+                  </div>
+                  <h3 className="text-2xl font-black mb-3 uppercase">{feature.title}</h3>
+                  <p className="text-gray-800 dark:text-gray-200 leading-relaxed font-bold">{feature.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -290,16 +229,16 @@ export default function Home() {
       </section>
 
       {/* Sample Prompts Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Explore Free Prompts</h2>
-          <p className="text-gray-600 dark:text-gray-400">Get a taste of what's inside</p>
+      <section className="container mx-auto px-4 py-24 bg-yellow-50 dark:bg-gray-900 border-y-2 border-black dark:border-gray-800">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-black mb-6 uppercase tracking-tight text-black dark:text-white">Explore <span className="bg-black text-white px-4 transform -rotate-2 inline-block">Free Prompts</span></h2>
+          <p className="text-2xl text-black dark:text-white font-bold">Get a taste of what's inside</p>
         </div>
 
         {loading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-64 bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />
+              <div key={i} className="h-64 bg-white dark:bg-gray-800 animate-pulse rounded-3xl border-2 border-black" />
             ))}
           </div>
         ) : (
@@ -313,71 +252,70 @@ export default function Home() {
                 viewport={{ once: true }}
               >
                 <Link href={`/prompts/${prompt.id}`}>
-                  <Card className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer border-purple-100 dark:border-purple-900 hover:border-purple-300 dark:hover:border-purple-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-3">
-                        <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
-                          {prompt.category}
-                        </Badge>
-                        {prompt.isPremium && (
-                          <Badge variant="default" className="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
-                            <Star className="w-3 h-3 mr-1" />
-                            Premium
-                          </Badge>
-                        )}
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 line-clamp-2">{prompt.title}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-                        {prompt.promptText}
-                      </p>
-                      <div className="mt-4 flex items-center text-purple-600 dark:text-purple-400 text-sm font-semibold">
-                        View Prompt <ArrowRight className="ml-1 w-4 h-4" />
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="h-full bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-black dark:border-white hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transition-all duration-200 cursor-pointer group hover:-translate-y-1">
+                    <div className="flex items-start justify-between mb-6">
+                      <span className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white border-2 border-black dark:border-gray-500 px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider">
+                        {prompt.category}
+                      </span>
+                      {prompt.isPremium && (
+                        <span className="bg-yellow-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider flex items-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                          <Star className="w-3 h-3 mr-1 fill-black" />
+                          Premium
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-black mb-4 group-hover:underline decoration-2 underline-offset-2 uppercase">{prompt.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 line-clamp-3 mb-6 font-medium border-l-4 border-gray-200 pl-4 italic">
+                      "{prompt.promptText}"
+                    </p>
+                    <div className="flex items-center text-black dark:text-white font-black group-hover:translate-x-2 transition-transform">
+                      View Prompt <ArrowRight className="ml-2 w-5 h-5 bg-black text-white rounded-full p-1" />
+                    </div>
+                  </div>
                 </Link>
               </motion.div>
             ))}
           </div>
         )}
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-16">
           <Link href="/prompts">
-            <Button size="lg" variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+            <Button size="lg" variant="outline" className="bg-white text-black border-2 border-black rounded-full px-10 py-8 text-xl font-black uppercase tracking-wide hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               View All Prompts
-              <ArrowRight className="ml-2 w-4 h-4" />
+              <ArrowRight className="ml-3 w-6 h-6" />
             </Button>
           </Link>
         </div>
       </section>
 
       {/* Email Capture Section */}
-      <section className="container mx-auto px-4 py-24">
+      {/* <section className="container mx-auto px-4 py-32">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="max-w-3xl mx-auto"
+          className="max-w-5xl mx-auto"
         >
-          <Card className="relative overflow-hidden border border-white/20 backdrop-blur-xl bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 shadow-2xl rounded-3xl">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent)]" />
+          <div className="bg-black dark:bg-white rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden border-4 border-yellow-400">
+           
+            <div className="absolute top-[-20%] left-[-10%] w-64 h-64 bg-green-400 rounded-full mix-blend-exclusion filter blur-3xl opacity-50"></div>
+            <div className="absolute bottom-[-20%] right-[-10%] w-80 h-80 bg-pink-500 rounded-full mix-blend-exclusion filter blur-3xl opacity-50"></div>
 
-            <CardContent className="p-10 md:p-14 text-center text-white relative z-10">
+            <div className="relative z-10">
+              <Mail className="w-20 h-20 mx-auto mb-8 text-yellow-400 dark:text-black" />
 
-              <Mail className="w-16 h-16 mx-auto mb-6 opacity-95 drop-shadow-lg" />
-
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-                Get 10 Free Premium Prompts
+              <h2 className="text-5xl md:text-7xl font-black mb-8 text-white dark:text-black uppercase tracking-tighter leading-none">
+                Get 10 Free <span className="text-yellow-400 dark:text-blue-600 underline decoration-wavy decoration-4">Premium Prompts</span>
               </h2>
 
-              <p className="text-lg md:text-xl opacity-90 mb-10">
-                Join <span className="font-semibold">10,000+ creators</span> getting weekly AI tips & exclusive prompts
+              <p className="text-2xl text-gray-300 dark:text-gray-600 mb-12 font-bold max-w-2xl mx-auto">
+                Join <span className="text-white dark:text-black bg-gray-800 dark:bg-gray-100 px-2">10,000+ creators</span> getting weekly AI tips directly to their inbox.
               </p>
 
               <form
                 onSubmit={handleEmailSubmit}
-                className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+                className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto"
               >
                 <Input
                   type="email"
@@ -385,75 +323,47 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-white/95 shadow-xl text-gray-900 border-none text-lg h-12 rounded-xl"
+                  className="bg-white border-4 border-transparent focus:border-yellow-400 text-black placeholder:text-gray-500 text-xl h-16 rounded-2xl px-6 font-bold"
                 />
 
                 <Button
                   type="submit"
                   size="lg"
                   disabled={emailSubmitting}
-                  className="h-12 rounded-xl text-white text-lg font-semibold bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition"
+                  className="h-16 rounded-2xl text-black text-xl font-black uppercase bg-yellow-400 hover:bg-yellow-300 transition-colors px-10 border-4 border-transparent"
                 >
-                  {emailSubmitting ? 'Sending...' : 'Get Free Pack'}
+                  {emailSubmitting ? 'Sending...' : 'Join Now'}
                 </Button>
               </form>
 
-              <p className="text-sm mt-6 opacity-80">
-                No spam. Unsubscribe anytime. We respect your privacy.
+              <p className="text-sm mt-8 text-gray-500 font-bold uppercase tracking-widest">
+                No spam. Unsubscribe anytime.
               </p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </section>
-
-      {/* Social Proof Section */}
-      {/* <section className="container mx-auto px-4 py-20">
-        <div className="text-center">
-          <h2 className="text-4xl font-bold mb-12">Trusted by Top Creators</h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              { number: "10,000+", label: "Active Users" },
-              { number: "500+", label: "AI Prompts" },
-              { number: "50,000+", label: "Content Created" }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                <div className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 dark:text-gray-400 text-lg">{stat.label}</div>
-              </motion.div>
-            ))}
+            </div>
           </div>
-        </div>
+        </motion.div>
       </section> */}
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 pb-32 pt-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center max-w-3xl mx-auto"
+          className="text-center max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Create Content That Converts?
+          <h2 className="text-6xl md:text-8xl font-black mb-8 uppercase tracking-tighter text-black dark:text-white leading-none">
+            Ready to <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-green-400 to-blue-400 animate-gradient">Dominate?</span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-            Join thousands of creators using AI prompts to grow faster
+          <p className="text-3xl text-gray-600 dark:text-gray-300 mb-12 font-bold">
+            Join thousands of creators growing 10x faster.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link href="/premium">
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-6 text-lg">
-                Get Premium Access
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Button size="lg" className="bg-black hover:bg-gray-800 text-white border-2 border-black dark:border-white px-12 py-10 text-2xl font-black rounded-full shadow-[8px_8px_0px_0px_#facc15] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
+                Get Premium
+                <ArrowRight className="ml-4 w-8 h-8" />
               </Button>
             </Link>
           </div>
@@ -461,52 +371,52 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-900 border-t border-purple-200 dark:border-purple-800 mt-20">
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid md:grid-cols-4 gap-8">
+      <footer className="bg-black text-white border-t-8 border-yellow-400">
+        <div className="container mx-auto px-4 py-20">
+          <div className="grid md:grid-cols-4 gap-12">
             <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3 mb-8">
+                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border-4 border-yellow-400">
+                  <Sparkles className="w-8 h-8 text-black" />
                 </div>
-                <span className="text-xl font-bold">SackNest</span>
+                <span className="text-3xl font-black tracking-tighter text-white">SackNest</span>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Premium AI prompts for content creators & influencers
+              <p className="text-gray-400 font-bold text-lg leading-relaxed">
+                Premium AI prompts for content creators, marketers & influencers.
+                <br /><span className="text-yellow-400">Level up your content game.</span>
               </p>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><Link href="/prompts" className="hover:text-purple-600">Browse Prompts</Link></li>
-                <li><Link href="/premium" className="hover:text-purple-600">Premium Packs</Link></li>
-                <li><Link href="/blog" className="hover:text-purple-600">Blog</Link></li>
+              <h4 className="font-black text-xl mb-8 uppercase tracking-widest text-yellow-400">Product</h4>
+              <ul className="space-y-4 font-bold text-lg text-gray-300">
+                <li><Link href="/prompts" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Browse Prompts</Link></li>
+                <li><Link href="/premium" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Premium Packs</Link></li>
+                <li><Link href="/blog" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Blog</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><Link href="/faqs" className="hover:text-purple-600">FAQ's</Link></li>
-                <li><Link href="/privacy" className="hover:text-purple-600">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-purple-600">Terms & Conditions</Link></li>
-                <li><Link href="/refund" className="hover:text-purple-600">Refund Policy</Link></li>
+              <h4 className="font-black text-xl mb-8 uppercase tracking-widest text-yellow-400">Legal</h4>
+              <ul className="space-y-4 font-bold text-lg text-gray-300">
+                <li><Link href="/faqs" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">FAQ's</Link></li>
+                <li><Link href="/privacy" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Terms & Conditions</Link></li>
+                <li><Link href="/refund" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Refund Policy</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-bold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><a href="/aboutus" className="hover:text-purple-600">About</a></li>
-                <li><a href="https://www.instagram.com/sack.nest/?igsh=MW1qdnVoNXM2eGRybA%3D%3D#" className="hover:text-purple-600">Instagram</a></li>
-                {/*   <li><a href="#" className="hover:text-purple-600">LinkedIn</a></li> */}
+              <h4 className="font-black text-xl mb-8 uppercase tracking-widest text-yellow-400">Company</h4>
+              <ul className="space-y-4 font-bold text-lg text-gray-300">
+                <li><a href="/aboutus" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">About</a></li>
+                <li><a href="https://www.instagram.com/sack.nest/?igsh=MW1qdnVoNXM2eGRybA%3D%3D#" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Instagram</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-purple-200 dark:border-purple-800 mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>© 2025 SackNest. All rights reserved</p>
+          <div className="border-t border-gray-800 mt-20 pt-10 text-center font-bold text-gray-500 uppercase tracking-widest">
+            <p>© 2025 SackNest. All rights reserved.</p>
           </div>
         </div>
       </footer>

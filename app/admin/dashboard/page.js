@@ -22,7 +22,7 @@ export default function AdminDashboard() {
     // Check if admin is logged in
     const token = localStorage.getItem('adminToken')
     const email = localStorage.getItem('adminEmail')
-    
+
     if (!token) {
       router.push('/admin/login')
       return
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   const fetchStats = async (token) => {
     try {
       const headers = { 'Authorization': `Bearer ${token}` }
-      
+
       const [promptsRes, blogsRes, packsRes, leadsRes, ordersRes] = await Promise.all([
         fetch('/api/prompts', { headers }),
         fetch('/api/blogs?published=false', { headers }),
@@ -69,21 +69,21 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-purple-200 dark:border-purple-800 sticky top-0 z-50">
+      <header className="bg-white dark:bg-black border-b-2 border-black sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent">
+                <Sparkles className="w-6 h-6 text-white dark:text-black" />
               </div>
               <div>
-                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">SackNest Admin</span>
-                <p className="text-xs text-gray-500">{adminEmail}</p>
+                <span className="text-xl font-black uppercase tracking-tighter text-black dark:text-white">SackNest Admin</span>
+                <p className="text-xs font-bold text-gray-500">{adminEmail}</p>
               </div>
             </div>
-            <Button onClick={handleLogout} variant="outline" size="sm">
+            <Button onClick={handleLogout} variant="outline" size="sm" className="border-2 border-black font-bold hover:bg-red-50 hover:text-red-600 hover:border-red-600">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
@@ -92,127 +92,156 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
+        <h1 className="text-4xl font-black mb-8 uppercase tracking-tighter text-black dark:text-white">Dashboard</h1>
 
         {/* Stats Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Prompts</CardTitle>
+          <Card className="border-2 border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardHeader className="pb-3 border-b-2 border-black bg-gray-50 dark:bg-gray-900 rounded-t-[1.3rem]">
+              <CardTitle className="text-sm font-black uppercase text-gray-600 dark:text-gray-400 tracking-wide">Total Prompts</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{stats.prompts}</div>
-                <FileText className="w-8 h-8 text-purple-600" />
+                <div className="text-4xl font-black">{stats.prompts}</div>
+                <FileText className="w-8 h-8 text-black" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Blog Posts</CardTitle>
+          <Card className="border-2 border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardHeader className="pb-3 border-b-2 border-black bg-gray-50 dark:bg-gray-900 rounded-t-[1.3rem]">
+              <CardTitle className="text-sm font-black uppercase text-gray-600 dark:text-gray-400 tracking-wide">Blog Posts</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{stats.blogs}</div>
+                <div className="text-4xl font-black">{stats.blogs}</div>
                 <FileText className="w-8 h-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Premium Packs</CardTitle>
+          <Card className="border-2 border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardHeader className="pb-3 border-b-2 border-black bg-gray-50 dark:bg-gray-900 rounded-t-[1.3rem]">
+              <CardTitle className="text-sm font-black uppercase text-gray-600 dark:text-gray-400 tracking-wide">Premium Packs</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{stats.packs}</div>
-                <Package className="w-8 h-8 text-amber-600" />
+                <div className="text-4xl font-black">{stats.packs}</div>
+                <Package className="w-8 h-8 text-amber-500" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Email Leads</CardTitle>
+          <Card className="border-2 border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all">
+            <CardHeader className="pb-3 border-b-2 border-black bg-gray-50 dark:bg-gray-900 rounded-t-[1.3rem]">
+              <CardTitle className="text-sm font-black uppercase text-gray-600 dark:text-gray-400 tracking-wide">Email Leads</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{stats.leads}</div>
-                <Mail className="w-8 h-8 text-green-600" />
+                <div className="text-4xl font-black">{stats.leads}</div>
+                <Mail className="w-8 h-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
+        <h2 className="text-2xl font-black mb-6 uppercase tracking-tight text-black dark:text-white">Quick Actions</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Link href="/admin/prompts">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-purple-200 dark:border-purple-800">
-              <CardContent className="p-6">
-                <FileText className="w-12 h-12 text-purple-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Manage Prompts</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Create, edit, and delete prompts</p>
+            <Card className="hover:bg-yellow-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-yellow-400 group-hover:text-black transition-colors">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Manage Prompts</h3>
+                  <p className="text-sm font-bold text-gray-500">Create, edit, and delete prompts</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin/blogs">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-blue-200 dark:border-blue-800">
-              <CardContent className="p-6">
-                <FileText className="w-12 h-12 text-blue-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Manage Blogs</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Write and publish blog posts</p>
+            <Card className="hover:bg-blue-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-blue-400 group-hover:text-black transition-colors">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Manage Blogs</h3>
+                  <p className="text-sm font-bold text-gray-500">Write and publish blog posts</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin/premium-packs">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-200 dark:border-amber-800">
-              <CardContent className="p-6">
-                <Package className="w-12 h-12 text-amber-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Premium Packs</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Manage premium offerings</p>
+            <Card className="hover:bg-amber-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-amber-400 group-hover:text-black transition-colors">
+                  <Package className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Premium Packs</h3>
+                  <p className="text-sm font-bold text-gray-500">Manage premium offerings</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin/trending-images">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-amber-200 dark:border-amber-800">
-              <CardContent className="p-6">
-                <Image className="w-12 h-12 text-amber-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Trending Images</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Manage premium offerings</p>
+            <Card className="hover:bg-pink-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-pink-400 group-hover:text-black transition-colors">
+                  <Image className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Trending Images</h3>
+                  <p className="text-sm font-bold text-gray-500">Manage viral AI images</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin/email-leads">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-green-200 dark:border-green-800">
-              <CardContent className="p-6">
-                <Mail className="w-12 h-12 text-green-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Email Leads</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">View and export email subscribers</p>
+            <Card className="hover:bg-green-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-green-400 group-hover:text-black transition-colors">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Email Leads</h3>
+                  <p className="text-sm font-bold text-gray-500">View and export subscribers</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/admin/orders">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-indigo-200 dark:border-indigo-800">
-              <CardContent className="p-6">
-                <DollarSign className="w-12 h-12 text-indigo-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Orders</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">View payment history</p>
+            <Card className="hover:bg-indigo-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-indigo-400 group-hover:text-black transition-colors">
+                  <DollarSign className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Orders</h3>
+                  <p className="text-sm font-bold text-gray-500">View payment history</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
 
           <a href="/" target="_blank">
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
-              <CardContent className="p-6">
-                <Users className="w-12 h-12 text-gray-600 mb-4" />
-                <h3 className="text-xl font-bold mb-2">View Live Site</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">Open public website</p>
+            <Card className="hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-white text-black p-3 rounded-xl border-2 border-black group-hover:bg-black group-hover:text-white transition-colors">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">View Live Site</h3>
+                  <p className="text-sm font-bold text-gray-500">Open public website</p>
+                </div>
               </CardContent>
             </Card>
           </a>
