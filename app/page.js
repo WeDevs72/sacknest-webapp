@@ -103,7 +103,7 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
-        <div className="container mx-auto px-4 py-4">
+        <div className="px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
               <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
@@ -130,7 +130,7 @@ export default function Home() {
 
       {/* Hero Section */}
 
-      <section className="container mx-auto px-4 pt-16">
+      <section className="px-8 pt-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -191,7 +191,7 @@ export default function Home() {
       <TrendingAICarousel />
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-24">
+      <section className="px-8 py-24">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -243,7 +243,7 @@ export default function Home() {
       </section>
 
       {/* Sample Prompts Section */}
-      <section className="container mx-auto px-4 py-24 bg-yellow-50 dark:bg-gray-900 border-y-2 border-black dark:border-gray-800">
+      <section className="px-8 py-24 bg-yellow-50 dark:bg-gray-900 border-y-2 border-black dark:border-gray-800">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-black mb-6 uppercase tracking-tight text-black dark:text-white">Explore <span className="bg-black text-white px-4 transform -rotate-2 inline-block">Free Prompts</span></h2>
           <p className="text-2xl text-black dark:text-white font-bold">Get a taste of what's inside</p>
@@ -359,7 +359,7 @@ export default function Home() {
       </section> */}
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 pb-32 pt-10">
+      <section className="px-8 pb-32 pt-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -386,7 +386,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-black text-white border-t-8 border-yellow-400">
-        <div className="container mx-auto px-4 py-20">
+        <div className="px-8 py-20">
           <div className="grid md:grid-cols-4 gap-12">
             <div>
               <div className="flex items-center space-x-3 mb-8">

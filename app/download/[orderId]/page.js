@@ -189,7 +189,7 @@ export default function DownloadPage() {
                   </>
                 )}
               </Button>
-              
+
               {!pack?.fileUrl && (
                 <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-2">
                   ⚠️ File is being prepared. Please contact support if this persists.
@@ -202,9 +202,9 @@ export default function DownloadPage() {
               <div className="flex items-start text-left bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <Mail className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold mb-1">Email Confirmation Sent</h3>
+                  <h3 className="font-semibold mb-1">Email Confirmation</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    We've sent your download link and receipt to <strong>{order?.customerEmail}</strong>
+                    We're sending your download link and receipt to <strong>{order?.customerEmail}</strong>. Check your inbox (and spam folder) within a few minutes.
                   </p>
                 </div>
               </div>

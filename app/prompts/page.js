@@ -187,7 +187,7 @@ export default function PromptsPage() {
         </div>
 
         {/* CTA Section */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-32 bg-yellow-400 rounded-[3rem] p-16 border-4 border-black relative overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-32 bg-yellow-400 rounded-[3rem] p-16 m-8 border-4 border-black relative overflow-hidden">
           <div className="absolute top-[-10%] right-[-5%] w-64 h-64 bg-white rounded-full opacity-20 filter blur-3xl" />
           <h2 className="text-4xl md:text-6xl font-black mb-6 uppercase tracking-tighter text-black relative z-10">Want Access to Premium Prompts?</h2>
           <p className="text-xl md:text-2xl text-black/80 font-bold mb-10 max-w-3xl mx-auto relative z-10">Get 500+ exclusive prompts used by top creators.</p>

@@ -23,7 +23,7 @@ export default function SidebarCategories({ categories, selectedCategory, setSel
                 transition-colors`}
                         >
                             {/* Optional icon – using Sparkles as placeholder */}
-                            <Sparkles className="h-4 w-4" />
+                            {/* <Sparkles className="h-4 w-4" /> */}
                             <span>{cat === 'all' ? 'All Categories' : cat}</span>
                         </button>
                     </li>

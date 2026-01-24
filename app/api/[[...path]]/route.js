@@ -4,6 +4,7 @@ import { supabaseServer as supabase } from '@/lib/supabase-server'
 import bcrypt from 'bcryptjs'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
+import { sendPurchaseConfirmationEmail } from '@/lib/email'
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -867,7 +868,7 @@ export async function POST(request) {
       }
 
       // Update order in database
-      const { error } = await supabase
+      const { data: updatedOrder, error } = await supabase
         .from('orders')
         .update({
           razorpayPaymentId,
@@ -875,9 +876,54 @@ export async function POST(request) {
           status: 'paid'
         })
         .eq('razorpayOrderId', razorpayOrderId)
+        .select()
+        .single()
 
       if (error) {
         console.error('Error updating order:', error)
+      }
+
+      // Fetch order and pack details for email
+      try {
+        const { data: order } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('razorpayOrderId', razorpayOrderId)
+          .single()
+
+        if (order && order.packId) {
+          const { data: pack } = await supabase
+            .from('premium_packs')
+            .select('*')
+            .eq('id', order.packId)
+            .single()
+
+          if (pack && order.customerEmail) {
+            // Construct download URL
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+            const downloadUrl = `${baseUrl}/download/${razorpayOrderId}`
+
+            // Send purchase confirmation email
+            // Don't await - send async to avoid delaying response
+            sendPurchaseConfirmationEmail({
+              customerEmail: order.customerEmail,
+              order: order,
+              pack: pack,
+              downloadUrl: downloadUrl
+            }).then((result) => {
+              if (result.error) {
+                console.error('Failed to send purchase confirmation email:', result.error)
+              } else {
+                console.log('Purchase confirmation email sent successfully to:', order.customerEmail)
+              }
+            }).catch((err) => {
+              console.error('Error in email sending process:', err)
+            })
+          }
+        }
+      } catch (emailError) {
+        // Log error but don't fail the payment verification
+        console.error('Error preparing/sending confirmation email:', emailError)
       }
 
       return NextResponse.json({
