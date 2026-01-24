@@ -31,9 +31,11 @@ dist/
 dist
 
 # env
-.env
-.env.local
-.env.production
+# .env
+# .env.local
+# .env.production
+# .env.development
+# .env.test
 
 # Environment files (comprehensive coverage)
 *token.json*
