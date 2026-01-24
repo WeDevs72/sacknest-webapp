@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star, Filter } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
-import logo from '@/public/logo.png'
-
+import logo from '@/public/logo_header.png'
 
 export default function Home() {
   const [prompts, setPrompts] = useState([])
@@ -103,16 +103,12 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
-        <div className="px-8 py-4">
+        <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
-                {/* <Image src={logo} alt="SackNest Logo" className="w-6 h-6 object-contain invert dark:invert-0" /> */}
-                <Sparkles className="w-6 h-6 text-white dark:text-black" />
-              </div>
-              <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
+              <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+              <span className="text-3xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
             </Link>
-
             <nav className="hidden md:flex items-center space-x-8 font-bold">
               <Link href="/prompts" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-yellow-400 underline-offset-4 transition-all">
                 Browse Prompts

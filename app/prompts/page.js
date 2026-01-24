@@ -5,9 +5,12 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import Image from 'next/image'
 import { Sparkles, Search, Menu, ArrowRight, Star } from 'lucide-react'
 import SidebarCategories from '@/components/SidebarCategories'
 import MobileDrawer from '@/components/MobileDrawer'
+import logo from '@/public/logo_header.png'
+
 
 export default function PromptsPage() {
   const [prompts, setPrompts] = useState([])
@@ -85,9 +88,8 @@ export default function PromptsPage() {
         <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white flex items-center justify-between px-4 py-4 lg:px-8">
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
-                <Sparkles className="w-6 h-6 text-white dark:text-black" />
-              </div>
+              <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+
               <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
                 SackNest
               </span>

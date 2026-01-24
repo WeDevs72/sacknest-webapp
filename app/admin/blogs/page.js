@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from "next/dynamic"
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +12,8 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Sparkles, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import logo from '@/public/logo_header.png'
+
 
 // ⭐ Load Markdown Editor (SSR Safe)
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
@@ -88,10 +91,10 @@ export default function AdminBlogsPage() {
     const token = localStorage.getItem('adminToken')
 
     try {
-      const url = editingBlog 
+      const url = editingBlog
         ? `/api/admin/blogs/${editingBlog.id}`
         : '/api/admin/blogs'
-      
+
       const method = editingBlog ? 'PUT' : 'POST'
 
       const response = await fetch(url, {
@@ -157,7 +160,8 @@ export default function AdminBlogsPage() {
               <span>Back to Dashboard</span>
             </Link>
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
+              <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+
               <span className="font-bold">Manage Blogs</span>
             </div>
           </div>
@@ -242,7 +246,7 @@ export default function AdminBlogsPage() {
               <label className="block text-sm font-medium mb-1">Slug *</label>
               <Input
                 value={formData.slug}
-                onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 required
               />
             </div>
@@ -267,7 +271,7 @@ export default function AdminBlogsPage() {
               <input
                 type="checkbox"
                 checked={formData.published}
-                onChange={(e) => setFormData({...formData, published: e.target.checked})}
+                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
                 className="w-4 h-4"
               />
               <label className="text-sm font-medium">Publish immediately</label>
@@ -278,7 +282,7 @@ export default function AdminBlogsPage() {
               <label className="block text-sm font-medium mb-1">SEO Title</label>
               <Input
                 value={formData.seoTitle}
-                onChange={(e) => setFormData({...formData, seoTitle: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
               />
             </div>
 
@@ -286,7 +290,7 @@ export default function AdminBlogsPage() {
               <label className="block text-sm font-medium mb-1">SEO Description</label>
               <Input
                 value={formData.seoDescription}
-                onChange={(e) => setFormData({...formData, seoDescription: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
               />
             </div>
 

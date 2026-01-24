@@ -7,6 +7,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Sparkles, Calendar, ArrowRight } from 'lucide-react'
 import { format } from 'date-fns'
+import Image from 'next/image'
+import logo from '@/public/logo_header.png'
+
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([])
@@ -37,9 +40,8 @@ export default function BlogPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center border-2 border-transparent group-hover:border-yellow-400 transition-colors">
-                <Sparkles className="w-6 h-6 text-white dark:text-black" />
-              </div>
+              <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+
               <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
             </Link>
 

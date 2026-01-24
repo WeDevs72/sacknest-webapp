@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Sparkles, FileText, DollarSign, Mail, Package, LogOut, Users, Image } from 'lucide-react'
 
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [stats, setStats] = useState({
