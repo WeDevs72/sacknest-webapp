@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Sparkles, Check, Star, Zap, ArrowRight, CreditCard, ArrowLeft, Loader2 } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
+import { detectCurrency, formatPrice, getCurrencySymbol } from '@/lib/currency'
 
 export default function PremiumPackDetailPage() {
     const params = useParams()
@@ -22,6 +23,10 @@ export default function PremiumPackDetailPage() {
     useEffect(() => {
         if (params.packId) {
             fetchPackDetails()
+            // Detect user's currency based on location
+            detectCurrency().then(detectedCurrency => {
+                setCurrency(detectedCurrency)
+            })
         }
     }, [params.packId])
 
@@ -210,7 +215,7 @@ export default function PremiumPackDetailPage() {
                                 </span>
                             </div>
 
-                            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tight mb-6 text-black dark:text-white">
+                            <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-6 text-black dark:text-white">
                                 {pack.name}
                             </h1>
 
@@ -219,8 +224,8 @@ export default function PremiumPackDetailPage() {
                             </p>
 
                             <div className="flex items-baseline gap-3 mb-8">
-                                <span className="text-6xl font-black text-black dark:text-white">₹{pack.priceInr}</span>
-                                <span className="text-3xl font-bold text-gray-500">/ ${pack.priceUsd}</span>
+                                <span className="text-6xl font-black text-black dark:text-white">{formatPrice(pack.priceInr, pack.priceUsd, currency)}</span>
+                                <span className="text-2xl font-bold text-gray-500 uppercase">{currency}</span>
                             </div>
                             <p className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-8">One-time payment • Lifetime access</p>
 
@@ -282,30 +287,16 @@ export default function PremiumPackDetailPage() {
                             </div>
 
                             <div className="p-8 space-y-6">
-                                {/* Currency Selection */}
-                                <div>
-                                    <label className="block text-sm font-black uppercase tracking-wide mb-3 text-black dark:text-white">Select Currency</label>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <button
-                                            onClick={() => setCurrency('INR')}
-                                            className={`p-4 rounded-xl border-2 font-bold transition-all ${currency === 'INR'
-                                                ? 'bg-yellow-400 border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
-                                                : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'
-                                                }`}
-                                        >
-                                            <div className="text-2xl font-black">₹{pack.priceInr}</div>
-                                            <div className="text-xs uppercase mt-1">Indian Rupee</div>
-                                        </button>
-                                        <button
-                                            onClick={() => setCurrency('USD')}
-                                            className={`p-4 rounded-xl border-2 font-bold transition-all ${currency === 'USD'
-                                                ? 'bg-yellow-400 border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
-                                                : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'
-                                                }`}
-                                        >
-                                            <div className="text-2xl font-black">${pack.priceUsd}</div>
-                                            <div className="text-xs uppercase mt-1">US Dollar</div>
-                                        </button>
+                                {/* Auto-detected Price Display */}
+                                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 border-2 border-black dark:border-gray-700">
+                                    <div className="text-center">
+                                        <p className="text-sm font-bold text-gray-500 uppercase mb-2">Your Price</p>
+                                        <div className="text-5xl font-black text-green-600 mb-1">
+                                            {formatPrice(pack.priceInr, pack.priceUsd, currency)}
+                                        </div>
+                                        <p className="text-xs font-bold text-gray-500 uppercase">
+                                            {currency === 'INR' ? 'Indian Rupee' : 'US Dollar'} • One-time payment
+                                        </p>
                                     </div>
                                 </div>
 
@@ -321,17 +312,6 @@ export default function PremiumPackDetailPage() {
                                         className="h-14 border-2 border-black dark:border-white rounded-xl text-lg font-bold bg-white dark:bg-gray-800"
                                     />
                                     <p className="text-xs font-bold text-gray-400 mt-2">📧 Download link will be sent here</p>
-                                </div>
-
-                                {/* Total */}
-                                <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 border-2 border-black dark:border-gray-700">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-lg font-bold text-gray-600 dark:text-gray-400">Total</span>
-                                        <span className="text-4xl font-black text-green-600">
-                                            {currency === 'INR' ? `₹${pack.priceInr}` : `$${pack.priceUsd}`}
-                                        </span>
-                                    </div>
-                                    <p className="text-xs font-bold text-gray-500 uppercase">One-time payment</p>
                                 </div>
 
                                 {/* Buy Button */}
@@ -367,10 +347,7 @@ export default function PremiumPackDetailPage() {
                                         <Check className="w-5 h-5 mr-2 text-green-500" />
                                         Lifetime access & updates
                                     </div>
-                                    <div className="flex items-center text-sm font-bold text-gray-600 dark:text-gray-400">
-                                        <Check className="w-5 h-5 mr-2 text-green-500" />
-                                        Email support included
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

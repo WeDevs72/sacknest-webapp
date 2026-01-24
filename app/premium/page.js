@@ -5,13 +5,19 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Sparkles, Check, Star, Zap, ArrowRight, CreditCard } from 'lucide-react'
+import { detectCurrency, formatPrice } from '@/lib/currency'
 
 export default function PremiumPage() {
   const [packs, setPacks] = useState([])
   const [loading, setLoading] = useState(true)
+  const [currency, setCurrency] = useState('INR') // Default to INR
 
   useEffect(() => {
     fetchPacks()
+    // Detect user's currency based on location
+    detectCurrency().then(detectedCurrency => {
+      setCurrency(detectedCurrency)
+    })
   }, [])
 
   const fetchPacks = async () => {
@@ -95,8 +101,8 @@ export default function PremiumPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <div className="h-full flex flex-col bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden border-2 border-black dark:border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all duration-300">
-                  <div className="bg-yellow-50 dark:bg-gray-800 p-8 border-b-2 border-black dark:border-white">
-                    <h3 className="text-3xl font-black uppercase tracking-tight mb-2">{pack.name}</h3>
+                  <div className="bg-yellow-50 dark:bg-gray-800 p-6 border-b-2 border-black dark:border-white">
+                    <h3 className="text-2xl font-black uppercase tracking-tight mb-2">{pack.name}</h3>
                     {/* <p className="text-lg font-bold text-gray-600 dark:text-gray-300 leading-tight">
                       {pack.description}
                     </p> */}
@@ -105,8 +111,8 @@ export default function PremiumPage() {
                   <div className="flex-1 p-8">
                     <div className="mb-8">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-5xl font-black">₹{pack.priceInr}</span>
-                        <span className="text-xl font-bold text-gray-500">/ ${pack.priceUsd}</span>
+                        <span className="text-5xl font-black">{formatPrice(pack.priceInr, pack.priceUsd, currency)}</span>
+                        <span className="text-sm font-bold text-gray-500 uppercase">{currency}</span>
                       </div>
                       <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">One-time payment</p>
                     </div>
@@ -117,7 +123,7 @@ export default function PremiumPage() {
 
                     <Link href={`/premium/${pack.id}`} className="block w-full">
                       <Button
-                        className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black text-xl py-8 rounded-2xl font-black uppercase tracking-wide shadow-[4px_4px_0px_0px_#facc15] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+                        className="w-full bg-black hover:bg-gray-800 text-white border-2 border-black text-xl py-6 rounded-2xl font-black uppercase tracking-wide shadow-[4px_4px_0px_0px_#facc15] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
                       >
                         <ArrowRight className="w-6 h-6 mr-3" />
                         View Details
