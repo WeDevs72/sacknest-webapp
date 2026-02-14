@@ -426,8 +426,9 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-800 mt-20 pt-10 text-center font-bold text-gray-500 uppercase tracking-widest">
-            <p>© 2025 SackNest. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} SackNest. All rights reserved.</p>
           </div>
+
         </div>
       </footer>
     </div>

@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Sparkles, Search, Eye, ArrowLeft } from 'lucide-react'
 import { PromptModal } from '@/components/PromptModal'
+import logo from '@/public/logo_header.png'
+
 
 export default function TrendingAIImagesPage() {
   const [images, setImages] = useState([])
@@ -66,13 +69,9 @@ export default function TrendingAIImagesPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-black dark:bg-white rounded-lg flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white dark:text-black" />
-            </div>
-            <span className="text-2xl font-black tracking-tighter">
-              SackNest
-            </span>
+          <Link href="/" className="flex items-center space-x-2 group">
+            <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+            <span className="text-3xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
           </Link>
 
           <nav className="hidden md:flex space-x-8 font-bold">
