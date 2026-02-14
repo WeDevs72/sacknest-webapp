@@ -37,12 +37,11 @@ export default function BlogPage() {
     <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-4 lg:px-8">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
               <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
-
-              <span className="text-2xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
+              <span className="text-3xl font-black tracking-tighter text-black dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">SackNest</span>
             </Link>
 
             <nav className="hidden md:flex items-center space-x-8 font-bold">
@@ -52,7 +51,7 @@ export default function BlogPage() {
               <Link href="/premium" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-green-400 underline-offset-4 transition-all">
                 Premium Packs
               </Link>
-              <Link href="/blog" className="text-black dark:text-white hover:underline decoration-4 decoration-blue-400 underline-offset-4">
+              <Link href="/blog" className="text-gray-900 dark:text-gray-100 hover:text-black dark:hover:text-white hover:underline decoration-4 decoration-blue-400 underline-offset-4 transition-all">
                 Blog
               </Link>
             </nav>

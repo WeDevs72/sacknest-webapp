@@ -103,7 +103,7 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-black font-sans selection:bg-yellow-300 selection:text-black">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b-2 border-black dark:border-white">
-        <div className="px-4 py-4">
+        <div className="container mx-auto px-4 py-4 lg:px-8">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2 group">
               <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
@@ -126,7 +126,7 @@ export default function Home() {
 
       {/* Hero Section */}
 
-      <section className="px-8 pt-16">
+      <section className="pt-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
