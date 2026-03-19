@@ -27,6 +27,7 @@ export default function AdminTrendingImagesPage() {
     note: "",
     aiToolName: "",
     aiToolUrl: "",
+    category: "",
     image: null
   })
 
@@ -62,6 +63,7 @@ export default function AdminTrendingImagesPage() {
       note: "",
       aiToolName: "",
       aiToolUrl: "",
+      category: "",
       image: null
     })
     setShowDialog(true)
@@ -75,6 +77,7 @@ export default function AdminTrendingImagesPage() {
       note: img.note || "",
       aiToolName: img.aiToolName || "",
       aiToolUrl: img.aiToolUrl || "",
+      category: img.category || "",
       image: null
     })
     setShowDialog(true)
@@ -116,6 +119,7 @@ export default function AdminTrendingImagesPage() {
       data.append("note", formData.note)
       data.append("aiToolName", formData.aiToolName)
       data.append("aiToolUrl", formData.aiToolUrl)
+      data.append("category", formData.category)
 
       if (formData.image) data.append("image", formData.image)
 
@@ -198,8 +202,9 @@ export default function AdminTrendingImagesPage() {
                     {img.promptText}
                   </p>
 
-                  <div className="mt-2">
+                  <div className="mt-2 flex gap-2">
                     <Badge>{img.aiToolName}</Badge>
+                    {img.category && <Badge variant="outline">{img.category}</Badge>}
                   </div>
 
                   <div className="flex gap-2 mt-4">
@@ -288,6 +293,17 @@ export default function AdminTrendingImagesPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, aiToolUrl: e.target.value })
                 }
+              />
+            </div>
+
+            <div>
+              <label>Category</label>
+              <Input
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                placeholder="e.g. Portrait, Landscape, Abstract..."
               />
             </div>
 

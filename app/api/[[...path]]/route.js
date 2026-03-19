@@ -87,12 +87,19 @@ export async function GET(request) {
     if (path === 'trending-ai-images' || path.startsWith('trending-ai-images?')) {
       const url = new URL(request.url)
       const limit = parseInt(url.searchParams.get('limit') || '100')
+      const category = url.searchParams.get('category')
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('trending_ai_images')
         .select('*')
         .order('createdAt', { ascending: false })
         .limit(limit)
+
+      if (category) {
+        query = query.eq('category', category)
+      }
+
+      const { data, error } = await query
 
       if (error) throw error
       return NextResponse.json(data || [])
@@ -110,6 +117,19 @@ export async function GET(request) {
       return NextResponse.json(data)
     }
 
+
+    // ==================== TRENDING AI IMAGE CATEGORIES ====================
+
+    if (path === 'trending-ai-image-categories') {
+      const { data, error } = await supabase
+        .from('trending_ai_images')
+        .select('category')
+
+      if (error) throw error
+
+      const categories = [...new Set(data.map(img => img.category))].filter(Boolean)
+      return NextResponse.json(categories)
+    }
 
     // ==================== PROMPTS ====================
 
@@ -492,6 +512,7 @@ export async function POST(request) {
       const aiToolUrl = formData.get("aiToolUrl")
       const title = formData.get("title")
       const note = formData.get("note")
+      const category = formData.get("category")
 
       if (!image) {
         return NextResponse.json({ error: "Image is required" }, { status: 400 })
@@ -545,7 +566,7 @@ export async function POST(request) {
       const { data, error } = await supabase
         .from("trending_ai_images")
         .insert([
-          { id, imageUrl, promptText, aiToolName, aiToolUrl, title, note }
+          { id, imageUrl, promptText, aiToolName, aiToolUrl, title, note, category }
         ])
         .select()
         .single()
@@ -1038,8 +1059,9 @@ export async function PUT(request) {
         const aiToolUrl = formData.get("aiToolUrl")
         const title = formData.get("title")
         const image = formData.get("image")
+        const category = formData.get("category")
 
-        updatedFields = { promptText, aiToolName, aiToolUrl, title }
+        updatedFields = { promptText, aiToolName, aiToolUrl, title, category }
 
         if (image) {
           const ext = image.name?.split(".").pop() || "jpg"

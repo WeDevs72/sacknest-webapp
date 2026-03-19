@@ -106,9 +106,16 @@ export function TrendingAICarousel() {
                   <h3 className="font-black text-lg uppercase truncate">
                     {image.title || 'Untitled'}
                   </h3>
-                  <span className="inline-block mt-2 bg-green-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase">
-                    {image.aiToolName}
-                  </span>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <span className="inline-block bg-green-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase">
+                      {image.aiToolName}
+                    </span>
+                    {image.category && (
+                      <span className="inline-block bg-blue-100 text-blue-800 border-2 border-blue-300 px-3 py-1 rounded-full text-xs font-black uppercase">
+                        {image.category}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
