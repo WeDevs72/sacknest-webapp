@@ -387,7 +387,8 @@ export default function Home() {
             <div>
               <div className="flex items-center space-x-3 mb-8">
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border-4 border-yellow-400">
-                  <Sparkles className="w-8 h-8 text-black" />
+                  <Image src={logo} alt="SackNest Logo" className="w-10 h-10" />
+
                 </div>
                 <span className="text-3xl font-black tracking-tighter text-white">SackNest</span>
               </div>
