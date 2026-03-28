@@ -52,7 +52,7 @@ export const metadata = {
   },
   verification: {
     // Add your Google Search Console verification code here when you have it
-    // google: 'your-verification-code',
+    google: 't0nIppd6o-fQZWoJio5lI4P3Js10ysBzGKZQSfhfg2Y',
   },
   alternates: {
     canonical: 'https://sacknest.com',
@@ -71,8 +71,8 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           {children}
-        </Providers>       
-          <GoogleAnalytics gaId={process.env.G_TAG} />
+        </Providers>
+        <GoogleAnalytics gaId={process.env.G_TAG} />
       </body>
     </html>
   )
