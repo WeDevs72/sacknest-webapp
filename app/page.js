@@ -420,7 +420,7 @@ export default function Home() {
             <div>
               <h4 className="font-black text-xl mb-8 uppercase tracking-widest text-yellow-400">Company</h4>
               <ul className="space-y-4 font-bold text-lg text-gray-300">
-                <li><a href="/aboutus" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">About</a></li>
+                <li><Link href="/aboutus" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">About</Link></li>
                 <li><a href="https://www.instagram.com/sack.nest/?igsh=MW1qdnVoNXM2eGRybA%3D%3D#" className="hover:text-white hover:underline decoration-yellow-400 underline-offset-4 transition-all">Instagram</a></li>
               </ul>
             </div>
