@@ -309,7 +309,7 @@ export default function Home() {
           className="max-w-5xl mx-auto"
         >
           <div className="bg-black dark:bg-white rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden border-4 border-yellow-400">
-           
+
             <div className="absolute top-[-20%] left-[-10%] w-64 h-64 bg-green-400 rounded-full mix-blend-exclusion filter blur-3xl opacity-50"></div>
             <div className="absolute bottom-[-20%] right-[-10%] w-80 h-80 bg-pink-500 rounded-full mix-blend-exclusion filter blur-3xl opacity-50"></div>
 
@@ -321,7 +321,7 @@ export default function Home() {
               </h2>
 
               <p className="text-2xl text-gray-300 dark:text-gray-600 mb-12 font-bold max-w-2xl mx-auto">
-                Join <span className="text-white dark:text-black bg-gray-800 dark:bg-gray-100 px-2">10,000+ creators</span> getting weekly AI tips directly to their inbox.
+                Join <span className="text-white dark:text-black bg-gray-800 dark:bg-gray-100 px-2">1000+ creators</span> getting weekly AI tips directly to their inbox.
               </p>
 
               <form

@@ -379,7 +379,7 @@ export async function GET(request) {
 
     // ==================== SECURE DOWNLOAD ====================
 
-    if (path === 'download/free-pdf') {
+    if (path === 'download/free_prompts.pdf') {
       try {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
         if (!supabaseUrl) return new NextResponse('Storage not configured', { status: 500 })
