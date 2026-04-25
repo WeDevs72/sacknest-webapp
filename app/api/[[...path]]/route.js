@@ -379,6 +379,30 @@ export async function GET(request) {
 
     // ==================== SECURE DOWNLOAD ====================
 
+    if (path === 'download/free-pdf') {
+      try {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+        if (!supabaseUrl) return new NextResponse('Storage not configured', { status: 500 })
+
+        const fileUrl = `${supabaseUrl}/storage/v1/object/public/assets/free_prompts.pdf`
+        const response = await fetch(fileUrl)
+
+        if (!response.ok) return new NextResponse('PDF not found or not uploaded yet', { status: 404 })
+
+        const arrayBuffer = await response.arrayBuffer()
+        return new NextResponse(arrayBuffer, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline; filename="sacknest_free_prompts.pdf"',
+            'Cache-Control': 'public, max-age=3600'
+          }
+        })
+      } catch (error) {
+        console.error('PDF proxy error:', error)
+        return new NextResponse('Internal Server Error', { status: 500 })
+      }
+    }
     if (path.match(/^download\/[^\/]+$/)) {
       const orderId = path.split('/')[1]
 
