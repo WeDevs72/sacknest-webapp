@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Sparkles, Zap, TrendingUp, Users, Copy, Check, Mail, ArrowRight, Star, Filter } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { TrendingAICarousel } from '@/components/TrendingAICarousel'
@@ -299,7 +300,7 @@ export default function Home() {
       </section>
 
       {/* Email Capture Section */}
-      {/* <section className="container mx-auto px-4 py-32">
+      <section className="container mx-auto px-4 py-32">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -316,7 +317,7 @@ export default function Home() {
               <Mail className="w-20 h-20 mx-auto mb-8 text-yellow-400 dark:text-black" />
 
               <h2 className="text-5xl md:text-7xl font-black mb-8 text-white dark:text-black uppercase tracking-tighter leading-none">
-                Get 10 Free <span className="text-yellow-400 dark:text-blue-600 underline decoration-wavy decoration-4">Premium Prompts</span>
+                Get Your Free <span className="text-yellow-400 dark:text-blue-600 underline decoration-wavy decoration-4">Prompts PDF</span>
               </h2>
 
               <p className="text-2xl text-gray-300 dark:text-gray-600 mb-12 font-bold max-w-2xl mx-auto">
@@ -342,7 +343,7 @@ export default function Home() {
                   disabled={emailSubmitting}
                   className="h-16 rounded-2xl text-black text-xl font-black uppercase bg-yellow-400 hover:bg-yellow-300 transition-colors px-10 border-4 border-transparent"
                 >
-                  {emailSubmitting ? 'Sending...' : 'Join Now'}
+                  {emailSubmitting ? 'Sending...' : 'Get PDF'}
                 </Button>
               </form>
 
@@ -352,7 +353,7 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
-      </section> */}
+      </section>
 
       {/* CTA Section */}
       <section className="px-8 pb-32 pt-10">

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Sparkles, FileText, DollarSign, Mail, Package, LogOut, Users, Image } from 'lucide-react'
+import { Sparkles, FileText, DollarSign, Mail, Package, LogOut, Users, Image, Settings } from 'lucide-react'
 
 
 export default function AdminDashboard() {
@@ -228,6 +228,20 @@ export default function AdminDashboard() {
                 <div>
                   <h3 className="text-lg font-black uppercase mb-1">Orders</h3>
                   <p className="text-sm font-bold text-gray-500">View payment history</p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/settings">
+            <Card className="hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer border-2 border-black group transition-all hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+              <CardContent className="p-6 flex items-start gap-4">
+                <div className="bg-black text-white p-3 rounded-xl border-2 border-black group-hover:bg-gray-400 group-hover:text-black transition-colors">
+                  <Settings className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black uppercase mb-1">Site Settings</h3>
+                  <p className="text-sm font-bold text-gray-500">Manage free PDF</p>
                 </div>
               </CardContent>
             </Card>

@@ -20,10 +20,23 @@ export function TrendingAICarousel() {
 
   const fetchImages = async () => {
     try {
-      const response = await fetch('/api/trending-ai-images?limit=10')
+      const response = await fetch('/api/trending-ai-images?limit=100')
       const data = await response.json()
       if (Array.isArray(data)) {
-        setImages(data)
+        // Group by category, keep latest (first one found)
+        const categoryMap = new Map();
+        data.forEach(img => {
+          if (img.category) {
+            const key = img.category.toLowerCase().trim();
+            if (!categoryMap.has(key)) {
+              categoryMap.set(key, img);
+            }
+          }
+        });
+        
+        // Convert to array and fallback to standard recent images if no categories exist
+        const categoryImages = Array.from(categoryMap.values());
+        setImages(categoryImages.length > 0 ? categoryImages : data.slice(0, 10));
       }
     } catch (error) {
       console.error('Error fetching images:', error)
@@ -92,29 +105,28 @@ export function TrendingAICarousel() {
                   />
 
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Button
-                      onClick={() => handleViewPrompt(image)}
-                      className="bg-yellow-400 text-black border-2 border-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      View
-                    </Button>
+                    <Link href={`/trending-ai-images?category=${encodeURIComponent(image.category || '')}`}>
+                      <Button
+                        className="bg-yellow-400 text-black border-2 border-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-yellow-300"
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Category
+                      </Button>
+                    </Link>
                   </div>
                 </div>
 
                 <div className="p-5">
-                  <h3 className="font-black text-lg uppercase truncate">
-                    {image.title || 'Untitled'}
+                  <h3 className="font-black text-lg uppercase truncate text-blue-600 dark:text-blue-400">
+                    {image.category || image.title || 'Untitled'}
                   </h3>
+                  <p className="font-bold text-sm text-gray-500 dark:text-gray-400 truncate mt-1">
+                    {image.category ? (image.title || 'Untitled') : ''}
+                  </p>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <span className="inline-block bg-green-400 text-black border-2 border-black px-3 py-1 rounded-full text-xs font-black uppercase">
                       {image.aiToolName}
                     </span>
-                    {image.category && (
-                      <span className="inline-block bg-blue-100 text-blue-800 border-2 border-blue-300 px-3 py-1 rounded-full text-xs font-black uppercase">
-                        {image.category}
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>

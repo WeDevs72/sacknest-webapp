@@ -4,7 +4,7 @@ import { supabaseServer as supabase } from '@/lib/supabase-server'
 import bcrypt from 'bcryptjs'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
-import { sendPurchaseConfirmationEmail } from '@/lib/email'
+import { sendPurchaseConfirmationEmail, sendFreePromptsEmail } from '@/lib/email'
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -684,23 +684,31 @@ export async function POST(request) {
         .eq('email', email)
         .single()
 
-      if (existing) {
-        return NextResponse.json({ success: true, message: 'Already subscribed' })
+      if (!existing) {
+        const id = generateId('lead')
+        const { error } = await supabase
+          .from('email_leads')
+          .insert([{
+            id,
+            email,
+            consent: true,
+            source
+          }])
+
+        if (error) {
+          console.error('[email-leads] DB insert error:', error)
+          return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
+        }
       }
 
-      const id = generateId('lead')
-      const { error } = await supabase
-        .from('email_leads')
-        .insert([{
-          id,
-          email,
-          consent: true,
-          source
-        }])
+      // Always try sending the free prompts email so users can retrieve it if they lose it
+      const emailResult = await sendFreePromptsEmail({ customerEmail: email })
+      if (emailResult.error) {
+        console.error('[email-leads] Email send error:', emailResult.error)
+        return NextResponse.json({ error: 'Failed to send email PDF' }, { status: 500 })
+      }
 
-      if (error) throw error
-
-      return NextResponse.json({ success: true, message: 'Subscribed successfully' })
+      return NextResponse.json({ success: true, message: existing ? 'Email resent successfully' : 'Subscribed successfully' })
     }
 
     // ==================== ADMIN: CREATE PROMPT ====================

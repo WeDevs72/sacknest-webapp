@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,7 +14,10 @@ import MobileDrawer from '@/components/MobileDrawer'
 import logo from '@/public/logo_header.png'
 
 
-export default function TrendingAIImagesPage() {
+function GalleryContent() {
+  const searchParams = useSearchParams()
+  const initialCategory = searchParams.get('category') || 'all'
+  
   const [images, setImages] = useState([])
   const [filteredImages, setFilteredImages] = useState([])
   const [loading, setLoading] = useState(true)
@@ -21,7 +25,7 @@ export default function TrendingAIImagesPage() {
   const [showModal, setShowModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [categories, setCategories] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
@@ -252,5 +256,17 @@ export default function TrendingAIImagesPage() {
         onClose={handleModalClose}
       />
     </div>
+  )
+}
+
+export default function TrendingAIImagesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white dark:bg-black font-sans flex items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-yellow-400 border-t-transparent" />
+      </div>
+    }>
+      <GalleryContent />
+    </Suspense>
   )
 }
