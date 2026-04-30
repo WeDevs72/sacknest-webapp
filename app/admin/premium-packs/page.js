@@ -24,10 +24,13 @@ export default function AdminPremiumPacksPage() {
     priceInr: '',
     priceUsd: '',
     fileUrl: '',
+    imageUrl: '',
     enabled: true
   })
   const [uploadingFile, setUploadingFile] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
+  const [selectedImage, setSelectedImage] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken')
@@ -62,6 +65,7 @@ export default function AdminPremiumPacksPage() {
       priceInr: '',
       priceUsd: '',
       fileUrl: '',
+      imageUrl: '',
       enabled: true
     })
     setShowDialog(true)
@@ -75,6 +79,7 @@ export default function AdminPremiumPacksPage() {
       priceInr: pack.priceInr,
       priceUsd: pack.priceUsd,
       fileUrl: pack.fileUrl || '',
+      imageUrl: pack.imageUrl || '',
       enabled: pack.enabled
     })
     setShowDialog(true)
@@ -126,10 +131,10 @@ export default function AdminPremiumPacksPage() {
       }
 
       const data = await response.json()
-      
+
       // Update fileUrl with the uploaded file URL
-      setFormData({...formData, fileUrl: data.fileUrl})
-      
+      setFormData({ ...formData, fileUrl: data.fileUrl })
+
       toast({
         title: "Upload Successful",
         description: `${file.name} uploaded successfully`
@@ -145,15 +150,94 @@ export default function AdminPremiumPacksPage() {
     }
   }
 
+  const handleImageUpload = async (e) => {
+    console.log('[ImageUpload] File input changed')
+    const file = e.target.files?.[0]
+    if (!file) {
+      console.log('[ImageUpload] No file selected, aborting')
+      return
+    }
+
+    console.log('[ImageUpload] File selected:', {
+      name: file.name,
+      type: file.type,
+      size: `${(file.size / 1024).toFixed(2)} KB`
+    })
+
+    if (!file.type.startsWith('image/')) {
+      console.warn('[ImageUpload] Invalid file type:', file.type)
+      toast({
+        title: "Invalid File",
+        description: "Please upload an image file",
+        variant: "destructive"
+      })
+      return
+    }
+
+    setSelectedImage(file)
+    setUploadingImage(true)
+    console.log('[ImageUpload] Validation passed, starting upload...')
+
+    try {
+      const token = localStorage.getItem('adminToken')
+      console.log('[ImageUpload] Admin token found:', !!token)
+
+      const packId = editingPack?.id || 'new_' + Date.now()
+      console.log('[ImageUpload] Using packId:', packId)
+
+      const uploadFormData = new FormData()
+      uploadFormData.append('image', file)
+      uploadFormData.append('packId', packId)
+      console.log('[ImageUpload] FormData prepared — sending POST to /api/upload-pack-image')
+
+      const response = await fetch('/api/upload-pack-image', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: uploadFormData
+      })
+
+      console.log('[ImageUpload] Response status:', response.status, response.statusText)
+
+      if (!response.ok) {
+        const errBody = await response.text()
+        console.error('[ImageUpload] Upload failed. Response body:', errBody)
+        throw new Error('Upload failed')
+      }
+
+      const data = await response.json()
+      console.log('[ImageUpload] Upload successful. Response data:', data)
+
+      setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }))
+      console.log('[ImageUpload] imageUrl set to:', data.imageUrl)
+
+      toast({
+        title: "Image Uploaded",
+        description: "Cover image updated successfully"
+      })
+    } catch (error) {
+      console.error('[ImageUpload] Error during upload:', error)
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive"
+      })
+    } finally {
+      setUploadingImage(false)
+      console.log('[ImageUpload] Upload flow complete')
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const token = localStorage.getItem('adminToken')
 
     try {
-      const url = editingPack 
+      const url = editingPack
         ? `/api/admin/premium-packs/${editingPack.id}`
         : '/api/admin/premium-packs'
-      
+
       const method = editingPack ? 'PUT' : 'POST'
 
       const response = await fetch(url, {
@@ -176,6 +260,7 @@ export default function AdminPremiumPacksPage() {
         })
         setShowDialog(false)
         setSelectedFile(null)
+        setSelectedImage(null)
         fetchPacks(token)
       } else {
         throw new Error('Failed to save pack')
@@ -243,7 +328,20 @@ export default function AdminPremiumPacksPage() {
         ) : (
           <div className="grid md:grid-cols-3 gap-6">
             {packs.map((pack) => (
-              <Card key={pack.id} className="border-purple-200 dark:border-purple-800">
+              <Card key={pack.id} className="border-purple-200 dark:border-purple-800 overflow-hidden">
+                {pack.imageUrl ? (
+                  <div className="h-40 overflow-hidden relative">
+                    <img
+                      src={pack.imageUrl}
+                      alt={pack.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-40 bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-purple-300" />
+                  </div>
+                )}
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <Badge variant={pack.enabled ? "default" : "secondary"}>
@@ -284,7 +382,7 @@ export default function AdminPremiumPacksPage() {
               <label className="block text-sm font-medium mb-1">Pack Name *</label>
               <Input
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
               />
             </div>
@@ -292,7 +390,7 @@ export default function AdminPremiumPacksPage() {
               <label className="block text-sm font-medium mb-1">Description</label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
                 className="w-full p-2 border rounded"
               />
@@ -304,7 +402,7 @@ export default function AdminPremiumPacksPage() {
                   type="number"
                   step="0.01"
                   value={formData.priceInr}
-                  onChange={(e) => setFormData({...formData, priceInr: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, priceInr: e.target.value })}
                   required
                 />
               </div>
@@ -314,14 +412,79 @@ export default function AdminPremiumPacksPage() {
                   type="number"
                   step="0.01"
                   value={formData.priceUsd}
-                  onChange={(e) => setFormData({...formData, priceUsd: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, priceUsd: e.target.value })}
                   required
                 />
               </div>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Cover Image</label>
+
+              {/* Preview area */}
+              <div className="relative w-full h-48 rounded-lg border-2 border-dashed border-purple-200 dark:border-purple-700 overflow-hidden bg-purple-50 dark:bg-purple-900/10 mb-3 flex items-center justify-center">
+                {uploadingImage ? (
+                  <div className="flex flex-col items-center gap-2 text-purple-500">
+                    <svg className="animate-spin h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    <span className="text-sm font-medium">Uploading image...</span>
+                  </div>
+                ) : formData.imageUrl ? (
+                  <>
+                    <img
+                      src={formData.imageUrl}
+                      alt="Cover preview"
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Remove button */}
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                      className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm transition"
+                      title="Remove image"
+                    >
+                      ✕
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-purple-400">
+                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-sm">No cover image</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Upload button */}
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={uploadingImage}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className={`inline-flex items-center gap-2 px-4 py-2 border border-purple-600 rounded-md cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 transition text-sm font-medium ${
+                    uploadingImage ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  {formData.imageUrl ? 'Change Cover Image' : 'Upload Cover Image'}
+                </label>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-2">Upload Premium Content File</label>
-              
+
               {/* File Upload Button */}
               <div className="mb-3">
                 <input
@@ -334,9 +497,8 @@ export default function AdminPremiumPacksPage() {
                 />
                 <label
                   htmlFor="file-upload"
-                  className={`inline-flex items-center px-4 py-2 border border-purple-600 rounded-md cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 transition ${
-                    uploadingFile ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`inline-flex items-center px-4 py-2 border border-purple-600 rounded-md cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/20 transition ${uploadingFile ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                 >
                   {uploadingFile ? (
                     <>
@@ -367,39 +529,39 @@ export default function AdminPremiumPacksPage() {
 
               {/* Generated URL Display */}
               <div className="flex gap-2 items-center">
-  <Input
-    value={formData.fileUrl ?? ""}
-    readOnly
-    placeholder="File URL will appear after upload"
-  />
+                <Input
+                  value={formData.fileUrl ?? ""}
+                  readOnly
+                  placeholder="File URL will appear after upload"
+                />
 
-  <button
-    type="button"
-    disabled={!formData.fileUrl}
-    onClick={() => navigator.clipboard.writeText(formData.fileUrl)}
-    className="px-3 py-2 border rounded"
-  >
-    Copy
-  </button>
+                <button
+                  type="button"
+                  disabled={!formData.fileUrl}
+                  onClick={() => navigator.clipboard.writeText(formData.fileUrl)}
+                  className="px-3 py-2 border rounded"
+                >
+                  Copy
+                </button>
 
-  {formData.fileUrl && (
-    <a
-      href={formData.fileUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="px-3 py-2 border rounded"
-    >
-      Open
-    </a>
-  )}
-</div>
+                {formData.fileUrl && (
+                  <a
+                    href={formData.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 border rounded"
+                  >
+                    Open
+                  </a>
+                )}
+              </div>
 
             </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 checked={formData.enabled}
-                onChange={(e) => setFormData({...formData, enabled: e.target.checked})}
+                onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
                 className="w-4 h-4"
               />
               <label className="text-sm font-medium">Enable pack</label>

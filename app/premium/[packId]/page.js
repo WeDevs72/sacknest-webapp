@@ -207,6 +207,12 @@ export default function PremiumPackDetailPage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                     >
+                        {pack.imageUrl && (
+                            <div className="w-full h-1024 rounded-[2.5rem] overflow-hidden border-4 border-black dark:border-white mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                                <img src={pack.imageUrl} alt={pack.name} className="w-full h-full object-cover" />
+                            </div>
+                        )}
+
                         <div className="bg-yellow-50 dark:bg-gray-800 rounded-[2.5rem] p-8 border-4 border-black dark:border-white mb-8">
                             <div className="inline-block mb-4">
                                 <span className="bg-yellow-400 text-black border-2 border-black px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-2">

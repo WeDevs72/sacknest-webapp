@@ -507,20 +507,72 @@ export async function POST(request) {
       }
 
       // Get public URL
-      const { data } = supabase.storage
+      const { data: publicUrlData } = supabase.storage
         .from('premium_packs')
         .getPublicUrl(filePath)
 
-      const fileUrl = data?.publicUrl || data?.publicURL
-
-
-      return NextResponse.json({
-        success: true,
-        fileUrl: fileUrl,
-        fileName: fileName,
-        filePath: filePath
-      })
+      return NextResponse.json({ fileUrl: publicUrlData.publicUrl })
     }
+
+    if (path === 'upload-pack-image') {
+      const authUser = getAuthUser(request)
+      if (!authUser) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
+      const formData = await request.formData()
+      const image = formData.get('image')
+      const packId = formData.get('packId')
+
+      if (!image) {
+        return NextResponse.json({ error: 'No image provided' }, { status: 400 })
+      }
+
+      const fileExt = image.name.split('.').pop()
+      const fileName = `pack_cover_${packId}_${Date.now()}.${fileExt}`
+      const filePath = `trending-images/${fileName}`
+
+      const bytes = await image.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('trending-images')
+        .upload(filePath, buffer, {
+          contentType: image.type,
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      if (uploadError) {
+        console.error('[upload-pack-image] Supabase upload error:', uploadError)
+        throw uploadError
+      }
+
+      console.log('[upload-pack-image] Upload to storage succeeded, filePath:', filePath)
+
+      const { data: publicUrlData, error: urlError } = supabase.storage
+        .from('trending-images')
+        .getPublicUrl(filePath)
+
+      console.log('[upload-pack-image] getPublicUrl result:', publicUrlData, 'error:', urlError)
+
+      if (urlError) {
+        console.error('[upload-pack-image] Failed to get public URL:', urlError)
+        return NextResponse.json({ error: 'Failed to generate image URL' }, { status: 500 })
+      }
+
+      // Supabase v1 uses publicURL, v2 uses publicUrl — handle both
+      const imageUrl = publicUrlData?.publicUrl || publicUrlData?.publicURL
+
+      if (!imageUrl) {
+        console.error('[upload-pack-image] No public URL in response:', publicUrlData)
+        return NextResponse.json({ error: 'Image URL missing after upload' }, { status: 500 })
+      }
+
+      console.log('[upload-pack-image] Returning imageUrl:', imageUrl)
+      return NextResponse.json({ imageUrl })
+    }
+
     //===================== ADD TRENDING IMAGES =====================
     if (path === 'admin/trending-ai-images') {
       const authUser = getAuthUser(request)
@@ -808,14 +860,11 @@ export async function POST(request) {
 
     if (path === 'admin/premium-packs') {
       const authUser = getAuthUser(request)
-      if (!authUser) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
+      if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-      const { name, description, priceInr, priceUsd, fileUrl, enabled } = body
-
-      if (!name || !priceInr || !priceUsd) {
-        return NextResponse.json({ error: 'Name and prices required' }, { status: 400 })
+      const { name, description, priceInr, priceUsd, fileUrl, imageUrl, enabled } = body
+      if (!name || isNaN(priceInr) || isNaN(priceUsd)) {
+        return NextResponse.json({ error: 'Name and prices are required' }, { status: 400 })
       }
 
       const id = generateId('pack')
@@ -828,6 +877,7 @@ export async function POST(request) {
           priceInr,
           priceUsd,
           fileUrl,
+          imageUrl,
           enabled: enabled !== false
         }])
         .select()
@@ -1056,22 +1106,30 @@ export async function PUT(request) {
 
     // ==================== UPDATE PREMIUM PACK ====================
     if (path.match(/^admin\/premium-packs\/[^\/]+$/)) {
+      const authUser = getAuthUser(request)
+      if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
       const id = path.split('/')[2]
       const body = await request.json()
+      const { name, description, priceInr, priceUsd, fileUrl, imageUrl, enabled } = body
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('premium_packs')
-        .update(body)
+        .update({
+          name,
+          description,
+          priceInr: parseFloat(priceInr),
+          priceUsd: parseFloat(priceUsd),
+          fileUrl,
+          imageUrl,
+          enabled,
+          updatedAt: new Date().toISOString()
+        })
         .eq('id', id)
-
-      if (error) throw error
-
-      const { data } = await supabase
-        .from('premium_packs')
-        .select('*')
-        .eq('id', id)
+        .select()
         .single()
 
+      if (error) throw error
       return NextResponse.json(data)
     }
 

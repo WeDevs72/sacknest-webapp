@@ -102,23 +102,38 @@ export default function PremiumPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <div className="h-full flex flex-col bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden border-2 border-black dark:border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] transition-all duration-300">
-                  <div className="bg-yellow-50 dark:bg-gray-800 p-6 border-b-2 border-black dark:border-white">
-                    <h3 className="text-2xl font-black uppercase tracking-tight mb-2">{pack.name}</h3>
-                    {/* <p className="text-lg font-bold text-gray-600 dark:text-gray-300 leading-tight">
-                      {pack.description}
-                    </p> */}
+                  {/* Cover Image */}
+                  <div className="h-48 relative overflow-hidden border-b-2 border-black dark:border-white bg-yellow-50 dark:bg-gray-800">
+                    {pack.imageUrl ? (
+                      <img
+                        src={pack.imageUrl}
+                        alt={pack.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Sparkles className="w-12 h-12 text-yellow-400 opacity-30" />
+                      </div>
+                    )}
+                    <div className="absolute top-4 right-4 group">
+                      <div className="bg-black text-white text-[10px] font-black uppercase px-3 py-1 rounded-full border border-white">Premium Pack</div>
+                    </div>
                   </div>
 
-                  <div className="flex-1 p-8">
-                    <div className="mb-8">
+                  <div className="bg-yellow-50 dark:bg-gray-800 p-2 border-b-2 border-black dark:border-white">
+                    <h3 className="text-2xl font-black uppercase tracking-tight mb-2">{pack.name}</h3>
+                  </div>
+
+                  <div className="flex-1 p-2">
+                    <div className="mb-2">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-5xl font-black">{formatPrice(pack.priceInr, pack.priceUsd, currency)}</span>
+                        <span className="text-2xl font-black">{formatPrice(pack.priceInr, pack.priceUsd, currency)}</span>
                         <span className="text-sm font-bold text-gray-500 uppercase">{currency}</span>
                       </div>
                       <p className="text-sm font-bold text-gray-500 uppercase tracking-wide">One-time payment</p>
                     </div>
 
-                    <p className="text-lg font-bold text-gray-600 dark:text-gray-300 leading-tight mb-8">
+                    <p className=" text-gray-600 dark:text-gray-300 leading-tight mb-8">
                       {pack.description}
                     </p>
 
