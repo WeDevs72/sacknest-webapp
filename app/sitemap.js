@@ -1,3 +1,6 @@
+import { getAllPrompts } from '@/lib/prompts-data'
+import { supabaseServer as supabase } from '@/lib/supabase-server'
+
 export default async function sitemap() {
   const baseUrl = 'https://sacknest.com'
 
@@ -20,11 +23,15 @@ export default async function sitemap() {
     priority: route === '' ? 1 : route === '/prompts' || route === '/premium' ? 0.9 : 0.7,
   }))
 
-  // Dynamic blog pages
+  // Dynamic blog pages — query Supabase directly (no HTTP round-trip)
   let blogPages = []
   try {
-    const res = await fetch(`${baseUrl}/api/blogs`, { next: { revalidate: 3600 } })
-    const blogs = await res.json()
+    const { data: blogs } = await supabase
+      .from('blogs')
+      .select('slug, updatedAt, createdAt')
+      .eq('published', true)
+      .order('createdAt', { ascending: false })
+
     if (Array.isArray(blogs)) {
       blogPages = blogs.map((blog) => ({
         url: `${baseUrl}/blog/${blog.slug}`,
@@ -37,22 +44,20 @@ export default async function sitemap() {
     console.error('Error fetching blogs for sitemap:', error)
   }
 
-  // Dynamic prompt pages
+  // Dynamic prompt pages — query Supabase directly (no HTTP round-trip)
   let promptPages = []
   try {
-    const res = await fetch(`${baseUrl}/api/prompts`, { next: { revalidate: 3600 } })
-    const prompts = await res.json()
-    if (Array.isArray(prompts)) {
-      promptPages = prompts.map((prompt) => ({
-        url: `${baseUrl}/prompts/${prompt.id}`,
-        lastModified: prompt.updatedAt || prompt.createdAt || new Date().toISOString(),
-        changeFrequency: 'monthly',
-        priority: 0.5,
-      }))
-    }
+    const prompts = await getAllPrompts()
+    promptPages = prompts.map((prompt) => ({
+      url: `${baseUrl}/prompts/${prompt.id}`,
+      lastModified: prompt.updatedAt || prompt.createdAt || new Date().toISOString(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }))
   } catch (error) {
     console.error('Error fetching prompts for sitemap:', error)
   }
 
   return [...staticPages, ...blogPages, ...promptPages]
 }
+
