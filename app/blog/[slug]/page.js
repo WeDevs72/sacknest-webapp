@@ -169,7 +169,7 @@ export default function BlogDetailPage() {
 
       {/* Main Content Layout */}
       <div className="container mx-auto px-4 lg:px-8 py-12">
-        <div className="max-w-7xl mx-auto flex gap-12">
+        <div className={`mx-auto flex gap-12 ${headings.length > 0 ? 'max-w-7xl' : 'max-w-4xl'}`}>
 
           {/* Table of Contents – Desktop Sidebar */}
           {headings.length > 0 && (
@@ -222,7 +222,7 @@ export default function BlogDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex-1 min-w-0 max-w-4xl"
+            className="flex-1 min-w-0 max-w-4xl mx-auto"
           >
             {/* Markdown Content */}
             <div className="blog-content">
