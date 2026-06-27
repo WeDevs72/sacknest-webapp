@@ -52,12 +52,15 @@ export const metadata = {
   },
   verification: {
     // Add your Google Search Console verification code here when you have it
-    google: 't0nIppd6o-fQZWoJio5lI4P3Js10ysBzGKZQSfhfg2Y',
+    // google: 't0nIppd6o-fQZWoJio5lI4P3Js10ysBzGKZQSfhfg2Y',
+    google: 'pfmahkvyzE181N8EPnoL0R9XZJV1r3foXrxp5mR8Hjg'
   },
   alternates: {
     canonical: 'https://sacknest.com',
   },
 }
+
+
 
 export default function RootLayout({ children }) {
   return (
