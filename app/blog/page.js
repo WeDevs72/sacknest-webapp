@@ -11,6 +11,35 @@ import Image from 'next/image'
 import logo from '@/public/logo_header.png'
 
 
+function stripMarkdown(text) {
+  if (!text) return ''
+  return text
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, '')
+    // Remove HTML tags
+    .replace(/<[^>]*>/g, '')
+    // Remove headers
+    .replace(/^[#\s]+(.*)$/gm, '$1')
+    // Remove links [text](url) -> text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    // Remove images ![alt](url) -> empty
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+    // Remove bold/italics
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    // Remove inline code
+    .replace(/`([^`]+)`/g, '$1')
+    // Remove blockquotes
+    .replace(/^\s*>\s+/gm, '')
+    // Remove list items markers
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    // Replace multiple newlines/spaces with a single space
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
@@ -109,7 +138,7 @@ export default function BlogPage() {
                     </div>
 
                     <p className="text-gray-600 dark:text-gray-300 line-clamp-3 mb-6 font-medium flex-grow">
-                      {blog.contentMarkdown.substring(0, 150)}...
+                      {stripMarkdown(blog.contentMarkdown).substring(0, 150)}...
                     </p>
 
                     <div className="flex items-center text-blue-600 dark:text-blue-400 font-black mt-auto uppercase tracking-wide group">
