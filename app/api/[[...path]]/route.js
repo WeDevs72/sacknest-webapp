@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 import { sendPurchaseConfirmationEmail, sendFreePromptsEmail } from '@/lib/email'
+import { pingIndexNow } from '@/lib/indexnow'
 
 // ============================================
 // UTILITY FUNCTIONS
@@ -820,6 +821,9 @@ export async function POST(request) {
         .single()
 
       if (error) throw error
+      if (data && data.id) {
+        pingIndexNow(`/prompts/${data.id}`)
+      }
       return NextResponse.json(data)
     }
 
@@ -853,6 +857,9 @@ export async function POST(request) {
         .single()
 
       if (error) throw error
+      if (data && data.published && data.slug) {
+        pingIndexNow(`/blog/${data.slug}`)
+      }
       return NextResponse.json(data)
     }
 
@@ -1080,6 +1087,10 @@ export async function PUT(request) {
         .eq('id', id)
         .single()
 
+      if (data && data.id) {
+        pingIndexNow(`/prompts/${data.id}`)
+      }
+
       return NextResponse.json(data)
     }
 
@@ -1100,6 +1111,10 @@ export async function PUT(request) {
         .select('*')
         .eq('id', id)
         .single()
+
+      if (data && data.published && data.slug) {
+        pingIndexNow(`/blog/${data.slug}`)
+      }
 
       return NextResponse.json(data)
     }
