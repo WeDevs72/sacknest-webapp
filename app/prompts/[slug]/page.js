@@ -23,6 +23,143 @@ export async function generateStaticParams() {
 }
 
 // ---------------------------------------------------------------------------
+// Meta description & platform formatting helpers
+// ---------------------------------------------------------------------------
+const PLATFORM_NAMES = {
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+  tiktok: 'TikTok',
+  linkedin: 'LinkedIn',
+  twitter: 'Twitter',
+  x: 'X',
+  facebook: 'Facebook',
+  pinterest: 'Pinterest',
+}
+
+const COMMON_START_VERBS = new Set([
+  'get', 'generate', 'create', 'write', 'build', 'plan', 'design', 
+  'make', 'craft', 'adapt', 'optimize', 'analyze', 'boost', 'improve', 
+  'land', 'pitch', 'find', 'run', 'grow', 'master', 'learn', 'use',
+  'discover', 'plan', 'organize'
+])
+
+function getPlatformName(p) {
+  if (!p) return 'AI'
+  const clean = p.replace(/-/g, ' ')
+  const low = clean.toLowerCase()
+  if (PLATFORM_NAMES[low]) return PLATFORM_NAMES[low]
+  return clean.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
+
+function formatMetaDescription(prompt) {
+  if (!prompt) return ''
+  const title = prompt.title || ''
+  const platformName = getPlatformName(prompt.platform || prompt.tags?.[0])
+
+  let whatItDoes = (prompt.seoDescription || prompt.title).trim()
+  if (whatItDoes.endsWith('.')) {
+    whatItDoes = whatItDoes.slice(0, -1)
+  }
+
+  // Determine if we need to prepend a verb for grammatical completeness
+  const words = whatItDoes.split(/\s+/)
+  const firstWord = words[0] ? words[0].toLowerCase() : ''
+  
+  const startsWithVerb = COMMON_START_VERBS.has(firstWord) || firstWord.endsWith('ing')
+
+  if (startsWithVerb) {
+    if (words[0] !== firstWord) {
+      if (words[0] !== words[0].toUpperCase()) {
+        whatItDoes = words[0].charAt(0).toLowerCase() + words[0].slice(1) + whatItDoes.slice(words[0].length)
+      }
+    }
+  } else {
+    // Prepend a suitable verb
+    let verb = 'generate'
+    const lowTitle = title.toLowerCase()
+    const lowWhat = whatItDoes.toLowerCase()
+    if (lowTitle.includes('email') || lowTitle.includes('template') || lowWhat.includes('template')) {
+      verb = 'get'
+    } else if (lowTitle.includes('calendar') || lowTitle.includes('planner')) {
+      verb = 'create'
+    } else if (lowTitle.includes('writer') || lowTitle.includes('copywriting')) {
+      verb = 'write'
+    } else if (lowTitle.includes('idea') || lowTitle.includes('generator')) {
+      verb = 'generate'
+    }
+    
+    if (words[0] && words[0] !== words[0].toUpperCase()) {
+      whatItDoes = words[0].charAt(0).toLowerCase() + words[0].slice(1) + whatItDoes.slice(words[0].length)
+    }
+    
+    whatItDoes = `${verb} ${whatItDoes}`
+  }
+
+  const part1 = `${title} – Free AI prompt for ${platformName}.`
+  const part2Base = `Use this ChatGPT prompt to `
+  const part3 = `Copy, paste & create content instantly.`
+  const part4 = `Part of SackNest's free AI prompt library.`
+
+  const candidates = [
+    {
+      build: (wid) => `${part1} ${part2Base}${wid}. ${part3} ${part4}`,
+    },
+    {
+      build: (wid) => `${part1} ${part2Base}${wid}. ${part3}`,
+    },
+    {
+      build: (wid) => `${part1} ${part2Base}${wid}. ${part4}`,
+    },
+    {
+      build: (wid) => `${part1} ${part2Base}${wid}.`,
+    }
+  ]
+
+  for (const cand of candidates) {
+    const desc = cand.build(whatItDoes)
+    if (desc.length >= 130 && desc.length <= 155) {
+      return desc
+    }
+  }
+
+  for (const cand of candidates) {
+    const dummyEmpty = cand.build('')
+    const baseLen = dummyEmpty.length
+    
+    const maxWidLen = 155 - baseLen
+    const minWidLen = 130 - baseLen
+
+    if (maxWidLen >= 10) {
+      let truncatedWid = whatItDoes
+      if (truncatedWid.length > maxWidLen) {
+        truncatedWid = truncatedWid.slice(0, maxWidLen - 1).trim() + '…'
+      }
+      const desc = cand.build(truncatedWid)
+      if (desc.length >= 130 && desc.length <= 155) {
+        return desc
+      }
+    }
+  }
+
+  let shortTitle = title
+  if (shortTitle.length > 30) {
+    shortTitle = shortTitle.slice(0, 27).trim() + '…'
+  }
+  const fallbackPart1 = `${shortTitle} – Free AI prompt for ${platformName}.`
+  const baseLenD = `${fallbackPart1} ${part2Base}.`.length
+  const allowedWidLen = 152 - baseLenD
+  let shortWid = whatItDoes
+  if (shortWid.length > allowedWidLen) {
+    shortWid = shortWid.slice(0, Math.max(5, allowedWidLen - 1)).trim() + '…'
+  }
+  const finalDesc = `${fallbackPart1} ${part2Base}${shortWid}.`
+  if (finalDesc.length < 130) {
+    return (finalDesc + ` ${part3}`).slice(0, 155)
+  }
+  return finalDesc.slice(0, 155)
+}
+
+// ---------------------------------------------------------------------------
 // generateMetadata — unique <title> and <meta description> per prompt
 // Format: "[Prompt Name] - Free AI Prompt | SackNest"
 // ---------------------------------------------------------------------------
@@ -39,9 +176,7 @@ export async function generateMetadata({ params }) {
 
   const title =
     prompt.seoTitle || `${prompt.title} - Free AI Prompt | SackNest`
-  const description =
-    prompt.seoDescription ||
-    `${prompt.promptText.slice(0, 150).trim()}…`
+  const description = formatMetaDescription(prompt)
 
   return {
     title,
@@ -70,19 +205,28 @@ export async function generateMetadata({ params }) {
 function buildJsonLd(prompt) {
   const baseUrl = 'https://sacknest.com'
   const url = `${baseUrl}/prompts/${prompt.id}`
+  const description = formatMetaDescription(prompt)
 
-  // Use HowTo when there are steps-like content, otherwise CreativeWork
+  const keywords = [
+    prompt.platform,
+    prompt.category,
+    ...(prompt.tags || []),
+  ]
+    .filter(Boolean)
+    .join(', ')
+
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'HowTo',
+    '@type': 'CreativeWork',
     name: prompt.title,
-    description: prompt.promptText.slice(0, 150).trim(),
-    url,
+    description: description,
     author: {
       '@type': 'Organization',
       name: 'SackNest',
       url: baseUrl,
     },
+    url: url,
+    keywords: keywords,
     publisher: {
       '@type': 'Organization',
       name: 'SackNest',
@@ -91,35 +235,11 @@ function buildJsonLd(prompt) {
         url: `${baseUrl}/logo_header.png`,
       },
     },
-    step: [
-      {
-        '@type': 'HowToStep',
-        name: 'Copy the prompt',
-        text: 'Click the "Copy Prompt" button to copy this AI prompt to your clipboard.',
-      },
-      {
-        '@type': 'HowToStep',
-        name: 'Paste into your AI tool',
-        text: `Open ChatGPT, Claude, or your preferred AI tool and paste the prompt.`,
-      },
-      {
-        '@type': 'HowToStep',
-        name: 'Generate your content',
-        text: 'Run the prompt and get high-quality AI-generated content instantly.',
-      },
-    ],
-    // Also tag as CreativeWork for richer indexing
-    mainEntityOfPage: {
-      '@type': 'CreativeWork',
-      name: prompt.title,
-      text: prompt.promptText,
-      genre: prompt.category,
-      keywords: [prompt.category, prompt.platform, ...(prompt.tags || [])].filter(Boolean).join(', '),
-    },
   }
 
   return JSON.stringify(schema)
 }
+
 
 // ---------------------------------------------------------------------------
 // Platform colour map — makes platform tags visually distinct
